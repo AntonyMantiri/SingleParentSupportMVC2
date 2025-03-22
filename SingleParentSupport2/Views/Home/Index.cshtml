@@ -1,0 +1,166 @@
+﻿@{
+    ViewData["Title"] = "Home";
+    Layout = "_Layout";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/pages/home.css" />
+}
+
+<div class="hero-section">
+    <div class="container">
+        <h1>Supporting Single Parents Every Step of the Way</h1>
+        <p>Find resources, community, and emotional support to help you navigate the challenges of single parenthood.</p>
+        <div class="cta-buttons">
+            <a href="/SupportRequest/Create" class="cta-button">Get Support Now</a>
+            <a href="/About" class="cta-button secondary">Learn More</a>
+        </div>
+    </div>
+</div>
+
+<div class="services-section">
+    <div class="container">
+        <h2>Our Services</h2>
+        <div class="row">
+            <div class="col-md-4 mb-4">
+                <div class="service-card">
+                    <div class="service-icon">
+                        <i class="bi bi-chat-dots"></i>
+                    </div>
+                    <h3>Online Chat Support</h3>
+                    <p>Connect with volunteers and professionals for real-time support and guidance.</p>
+                    <a href="/Chat" class="btn btn-outline-primary">Chat Now</a>
+                </div>
+            </div>
+            <div class="col-md-4 mb-4">
+                <div class="service-card">
+                    <div class="service-icon">
+                        <i class="bi bi-heart-pulse"></i>
+                    </div>
+                    <h3>Mental Wellbeing</h3>
+                    <p>Access resources and tools to support your mental health journey.</p>
+                    <a href="/Services/MentalWellbeing" class="btn btn-outline-primary">Explore</a>
+                </div>
+            </div>
+            <div class="col-md-4 mb-4">
+                <div class="service-card">
+                    <div class="service-icon">
+                        <i class="bi bi-peace"></i>
+                    </div>
+                    <h3>Spiritual Support</h3>
+                    <p>Find spiritual guidance and practices to nurture your inner strength.</p>
+                    <a href="/Services/SpiritualSupport" class="btn btn-outline-primary">Discover</a>
+                </div>
+            </div>
+            <div class="col-md-4 mb-4">
+                <div class="service-card">
+                    <div class="service-icon">
+                        <i class="bi bi-activity"></i>
+                    </div>
+                    <h3>Physical Wellbeing</h3>
+                    <p>Learn about self-care, nutrition, and exercise tailored for busy single parents.</p>
+                    <a href="/Services/PhysicalWellbeing" class="btn btn-outline-primary">Learn More</a>
+                </div>
+            </div>
+            <div class="col-md-4 mb-4">
+                <div class="service-card">
+                    <div class="service-icon">
+                        <i class="bi bi-people"></i>
+                    </div>
+                    <h3>Volunteer Services</h3>
+                    <p>Get practical help from our dedicated volunteers or become a volunteer yourself.</p>
+                    <a href="/Services/Volunteer" class="btn btn-outline-primary">Get Involved</a>
+                </div>
+            </div>
+            <div class="col-md-4 mb-4">
+                <div class="service-card">
+                    <div class="service-icon">
+                        <i class="bi bi-book"></i>
+                    </div>
+                    <h3>Resource Library</h3>
+                    <p>Access our comprehensive collection of articles, guides, and legal resources.</p>
+                    <a href="/Resource" class="btn btn-outline-primary">Browse Resources</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="testimonials-section">
+    <div class="container">
+        <h2>Testimonials</h2>
+        <div class="row">
+            <div class="col-md-6">
+                <div class="testimonial-card">
+                    <p class="testimonial-text">"This website has been a lifeline for me during the most challenging time of my life. The resources and support have helped me regain my confidence as a parent."</p>
+                    <p class="testimonial-author">- Jane D., Single Mother</p>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="testimonial-card">
+                    <p class="testimonial-text">"After losing custody of my children, I felt lost and alone. The community here helped me navigate the legal system and maintain a meaningful relationship with my kids."</p>
+                    <p class="testimonial-author">- Michael S., Single Father</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="resources-section">
+    <div class="container">
+        <h2>Featured Resources</h2>
+        <div class="row">
+            <div class="col-md-6 col-lg-3 mb-4">
+                <div class="resource-item">
+                    <h3>Legal Guide: Understanding Custody Rights</h3>
+                    <p>A comprehensive guide to navigating custody arrangements and legal proceedings.</p>
+                    <a href="/Resource/Details/1" class="btn btn-outline-primary">Read More</a>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-3 mb-4">
+                <div class="resource-item">
+                    <h3>Financial Support for Single Parents</h3>
+                    <p>Information about financial assistance programs and budgeting tips.</p>
+                    <a href="/Resource/Details/2" class="btn btn-outline-primary">Read More</a>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-3 mb-4">
+                <div class="resource-item">
+                    <h3>Coping with Emotional Challenges</h3>
+                    <p>Strategies and techniques for managing stress, grief, and other emotional challenges.</p>
+                    <a href="/Resource/Details/3" class="btn btn-outline-primary">Read More</a>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-3 mb-4">
+                <div class="resource-item">
+                    <h3>Co-Parenting Successfully</h3>
+                    <p>Tips for maintaining a healthy co-parenting relationship for the benefit of your children.</p>
+                    <a href="/Resource/Details/4" class="btn btn-outline-primary">Read More</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="cta-section">
+    <div class="container">
+        <h2>Get Support Now</h2>
+        <p>Whether you're looking for emotional support, practical resources, or community connection, we're here to help.</p>
+        <div class="cta-buttons">
+            <a href="/Contact" class="cta-button white">Contact Us</a>
+            <a href="/Appointment/Schedule" class="cta-button white">Schedule Appointment</a>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        // Add Bootstrap Icons if not already included in layout
+        if (!document.querySelector('link[href*="bootstrap-icons"]')) {
+            const iconLink = document.createElement('link');
+            iconLink.rel = 'stylesheet';
+            iconLink.href = 'https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css';
+            document.head.appendChild(iconLink);
+        }
+    </script>
+}
