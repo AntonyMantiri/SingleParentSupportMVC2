@@ -1,0 +1,218 @@
+/* Authentication Pages Styles */
+.auth-container {
+    max-width: 500px;
+    margin: 60px auto;
+    padding: 30px;
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.auth-header {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+    .auth-header h1 {
+        font-size: 2rem;
+        color: #343a40;
+        margin-bottom: 10px;
+    }
+
+    .auth-header p {
+        color: #6c757d;
+    }
+
+.auth-tabs {
+    display: flex;
+    margin-bottom: 30px;
+    border-bottom: 1px solid #dee2e6;
+}
+
+.auth-tab {
+    flex: 1;
+    text-align: center;
+    padding: 15px;
+    cursor: pointer;
+    color: #6c757d;
+    font-weight: 600;
+    transition: all 0.3s;
+}
+
+    .auth-tab:hover {
+        color: #5a67d8;
+    }
+
+    .auth-tab.active {
+        color: #5a67d8;
+        border-bottom: 3px solid #5a67d8;
+    }
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 600;
+    color: #343a40;
+}
+
+.form-control {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ced4da;
+    border-radius: 5px;
+    transition: border-color 0.3s;
+}
+
+    .form-control:focus {
+        border-color: #5a67d8;
+        outline: none;
+        box-shadow: 0 0 0 3px rgba(90, 103, 216, 0.2);
+    }
+
+.form-check {
+    display: flex;
+    align-items: flex-start;
+    margin-bottom: 20px;
+}
+
+.form-check-input {
+    margin-right: 10px;
+    margin-top: 5px;
+}
+
+.form-check-label {
+    color: #6c757d;
+    font-size: 0.9rem;
+}
+
+.auth-button {
+    display: block;
+    width: 100%;
+    padding: 12px;
+    background-color: #5a67d8;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+    .auth-button:hover {
+        background-color: #4c51bf;
+        text-decoration: none;
+        color: white;
+    }
+
+    .auth-button.google {
+        background-color: #4285F4;
+    }
+
+        .auth-button.google:hover {
+            background-color: #3367D6;
+        }
+
+    .auth-button.facebook {
+        background-color: #3b5998;
+    }
+
+        .auth-button.facebook:hover {
+            background-color: #2d4373;
+        }
+
+.auth-divider {
+    text-align: center;
+    margin: 20px 0;
+    position: relative;
+}
+
+    .auth-divider::before {
+        content: "";
+        position: absolute;
+        top: 50%;
+        left: 0;
+        right: 0;
+        height: 1px;
+        background-color: #dee2e6;
+    }
+
+    .auth-divider span {
+        position: relative;
+        background-color: #f8f9fa;
+        padding: 0 15px;
+        color: #6c757d;
+    }
+
+.forgot-password {
+    text-align: right;
+    margin-bottom: 20px;
+}
+
+    .forgot-password a {
+        color: #5a67d8;
+        text-decoration: none;
+        font-size: 0.9rem;
+    }
+
+        .forgot-password a:hover {
+            text-decoration: underline;
+        }
+
+.auth-footer {
+    text-align: center;
+    margin-top: 30px;
+    color: #6c757d;
+    font-size: 0.9rem;
+}
+
+    .auth-footer a {
+        color: #5a67d8;
+        text-decoration: none;
+    }
+
+        .auth-footer a:hover {
+            text-decoration: underline;
+        }
+
+.validation-summary-errors {
+    color: #dc3545;
+    background-color: #f8d7da;
+    border: 1px solid #f5c6cb;
+    border-radius: 5px;
+    padding: 15px;
+    margin-bottom: 20px;
+}
+
+    .validation-summary-errors ul {
+        margin-bottom: 0;
+        padding-left: 20px;
+    }
+
+.field-validation-error {
+    color: #dc3545;
+    font-size: 0.9rem;
+    margin-top: 5px;
+    display: block;
+}
+
+.input-validation-error {
+    border-color: #dc3545;
+}
+
+    .input-validation-error:focus {
+        border-color: #dc3545;
+        box-shadow: 0 0 0 3px rgba(220, 53, 69, 0.25);
+    }
+
+@media (max-width: 576px) {
+    .auth-container {
+        margin: 30px 15px;
+        padding: 20px;
+    }
+}

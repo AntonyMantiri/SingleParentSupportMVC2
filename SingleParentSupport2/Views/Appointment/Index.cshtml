@@ -1,0 +1,364 @@
+﻿@{
+    ViewData["Title"] = "Schedule Appointment";
+    Layout = "_Layout";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/pages/appointment.css" />
+}
+
+<div class="page-header">
+    <div class="container">
+        <h1>Schedule an Appointment</h1>
+        <p>Book a session with one of our volunteers or counselors</p>
+    </div>
+</div>
+
+<div class="container appointment-container">
+    <div class="appointment-form">
+        <h2>Book Your Appointment</h2>
+        <p>Select a date, time, and volunteer to schedule your appointment.</p>
+
+        <form asp-action="Schedule" asp-controller="Appointment" method="post">
+            <div class="validation-summary-errors" asp-validation-summary="All" style="display:none;"></div>
+
+            <div class="calendar-container">
+                <div class="calendar-header">
+                    <div class="calendar-title">March 2025</div>
+                    <div class="calendar-nav">
+                        <button type="button" class="calendar-nav-btn" id="prev-month">
+                            <i class="bi bi-chevron-left"></i>
+                        </button>
+                        <button type="button" class="calendar-nav-btn" id="next-month">
+                            <i class="bi bi-chevron-right"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="calendar-grid">
+                    <div class="calendar-day-header">Sun</div>
+                    <div class="calendar-day-header">Mon</div>
+                    <div class="calendar-day-header">Tue</div>
+                    <div class="calendar-day-header">Wed</div>
+                    <div class="calendar-day-header">Thu</div>
+                    <div class="calendar-day-header">Fri</div>
+                    <div class="calendar-day-header">Sat</div>
+
+                    <!-- Calendar days would be dynamically generated -->
+                    <div class="calendar-day other-month">
+                        <div class="calendar-day-number" data-day="Sun">23</div>
+                    </div>
+                    <div class="calendar-day other-month">
+                        <div class="calendar-day-number" data-day="Mon">24</div>
+                    </div>
+                    <div class="calendar-day other-month">
+                        <div class="calendar-day-number" data-day="Tue">25</div>
+                    </div>
+                    <div class="calendar-day other-month">
+                        <div class="calendar-day-number" data-day="Wed">26</div>
+                    </div>
+                    <div class="calendar-day other-month">
+                        <div class="calendar-day-number" data-day="Thu">27</div>
+                    </div>
+                    <div class="calendar-day other-month">
+                        <div class="calendar-day-number" data-day="Fri">28</div>
+                    </div>
+                    <div class="calendar-day">
+                        <div class="calendar-day-number" data-day="Sat">1</div>
+                    </div>
+                    <div class="calendar-day">
+                        <div class="calendar-day-number" data-day="Sun">2</div>
+                    </div>
+                    <div class="calendar-day">
+                        <div class="calendar-day-number" data-day="Mon">3</div>
+                    </div>
+                    <div class="calendar-day">
+                        <div class="calendar-day-number" data-day="Tue">4</div>
+                    </div>
+                    <div class="calendar-day">
+                        <div class="calendar-day-number" data-day="Wed">5</div>
+                    </div>
+                    <div class="calendar-day">
+                        <div class="calendar-day-number" data-day="Thu">6</div>
+                    </div>
+                    <div class="calendar-day">
+                        <div class="calendar-day-number" data-day="Fri">7</div>
+                    </div>
+                    <div class="calendar-day">
+                        <div class="calendar-day-number" data-day="Sat">8</div>
+                    </div>
+                    <div class="calendar-day">
+                        <div class="calendar-day-number" data-day="Sun">9</div>
+                    </div>
+                    <div class="calendar-day">
+                        <div class="calendar-day-number" data-day="Mon">10</div>
+                    </div>
+                    <div class="calendar-day">
+                        <div class="calendar-day-number" data-day="Tue">11</div>
+                    </div>
+                    <div class="calendar-day">
+                        <div class="calendar-day-number" data-day="Wed">12</div>
+                    </div>
+                    <div class="calendar-day">
+                        <div class="calendar-day-number" data-day="Thu">13</div>
+                    </div>
+                    <div class="calendar-day">
+                        <div class="calendar-day-number" data-day="Fri">14</div>
+                    </div>
+                    <div class="calendar-day">
+                        <div class="calendar-day-number" data-day="Sat">15</div>
+                    </div>
+                    <div class="calendar-day">
+                        <div class="calendar-day-number" data-day="Sun">16</div>
+                    </div>
+                    <div class="calendar-day">
+                        <div class="calendar-day-number" data-day="Mon">17</div>
+                    </div>
+                    <div class="calendar-day">
+                        <div class="calendar-day-number" data-day="Tue">18</div>
+                    </div>
+                    <div class="calendar-day">
+                        <div class="calendar-day-number" data-day="Wed">19</div>
+                    </div>
+                    <div class="calendar-day">
+                        <div class="calendar-day-number" data-day="Thu">20</div>
+                    </div>
+                    <div class="calendar-day today">
+                        <div class="calendar-day-number" data-day="Fri">21</div>
+                    </div>
+                    <div class="calendar-day">
+                        <div class="calendar-day-number" data-day="Sat">22</div>
+                    </div>
+                    <div class="calendar-day">
+                        <div class="calendar-day-number" data-day="Sun">23</div>
+                    </div>
+                    <div class="calendar-day">
+                        <div class="calendar-day-number" data-day="Mon">24</div>
+                    </div>
+                    <div class="calendar-day">
+                        <div class="calendar-day-number" data-day="Tue">25</div>
+                    </div>
+                    <div class="calendar-day">
+                        <div class="calendar-day-number" data-day="Wed">26</div>
+                    </div>
+                    <div class="calendar-day">
+                        <div class="calendar-day-number" data-day="Thu">27</div>
+                    </div>
+                    <div class="calendar-day">
+                        <div class="calendar-day-number" data-day="Fri">28</div>
+                    </div>
+                    <div class="calendar-day">
+                        <div class="calendar-day-number" data-day="Sat">29</div>
+                    </div>
+                    <div class="calendar-day">
+                        <div class="calendar-day-number" data-day="Sun">30</div>
+                    </div>
+                    <div class="calendar-day">
+                        <div class="calendar-day-number" data-day="Mon">31</div>
+                    </div>
+                    <div class="calendar-day other-month">
+                        <div class="calendar-day-number" data-day="Tue">1</div>
+                    </div>
+                    <div class="calendar-day other-month">
+                        <div class="calendar-day-number" data-day="Wed">2</div>
+                    </div>
+                    <div class="calendar-day other-month">
+                        <div class="calendar-day-number" data-day="Thu">3</div>
+                    </div>
+                    <div class="calendar-day other-month">
+                        <div class="calendar-day-number" data-day="Fri">4</div>
+                    </div>
+                    <div class="calendar-day other-month">
+                        <div class="calendar-day-number" data-day="Sat">5</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Selected Date</label>
+                <input type="text" id="selected-date" name="AppointmentDate" class="form-control" readonly required>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Available Time Slots</label>
+                <div class="time-slots">
+                    <div class="time-slot" data-time="09:00">9:00 AM</div>
+                    <div class="time-slot" data-time="10:00">10:00 AM</div>
+                    <div class="time-slot" data-time="11:00">11:00 AM</div>
+                    <div class="time-slot" data-time="12:00">12:00 PM</div>
+                    <div class="time-slot" data-time="13:00">1:00 PM</div>
+                    <div class="time-slot" data-time="14:00">2:00 PM</div>
+                    <div class="time-slot" data-time="15:00">3:00 PM</div>
+                    <div class="time-slot" data-time="16:00">4:00 PM</div>
+                    <div class="time-slot unavailable" data-time="17:00">5:00 PM</div>
+                </div>
+                <input type="hidden" id="selected-time" name="AppointmentTime" required>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Select a Volunteer</label>
+                <div class="volunteer-list">
+                    <div class="volunteer-card" data-volunteer-id="1">
+                        <div class="volunteer-avatar">
+                            <img src="https://via.placeholder.com/60" alt="John Doe">
+                        </div>
+                        <div class="volunteer-info">
+                            <div class="volunteer-name">John Doe</div>
+                            <div class="volunteer-role">Mental Health Counselor</div>
+                            <div class="volunteer-bio">Specializes in family dynamics and emotional support for single parents.</div>
+                        </div>
+                    </div>
+                    <div class="volunteer-card" data-volunteer-id="2">
+                        <div class="volunteer-avatar">
+                            <img src="https://via.placeholder.com/60" alt="Sarah Johnson">
+                        </div>
+                        <div class="volunteer-info">
+                            <div class="volunteer-name">Sarah Johnson</div>
+                            <div class="volunteer-role">Legal Advisor</div>
+                            <div class="volunteer-bio">Provides guidance on custody issues and legal rights for single parents.</div>
+                        </div>
+                    </div>
+                    <div class="volunteer-card" data-volunteer-id="3">
+                        <div class="volunteer-avatar">
+                            <img src="https://via.placeholder.com/60" alt="Michael Brown">
+                        </div>
+                        <div class="volunteer-info">
+                            <div class="volunteer-name">Michael Brown</div>
+                            <div class="volunteer-role">Financial Advisor</div>
+                            <div class="volunteer-bio">Helps with budgeting, financial planning, and accessing financial assistance.</div>
+                        </div>
+                    </div>
+                </div>
+                <input type="hidden" id="selected-volunteer" name="VolunteerId" required>
+            </div>
+
+            <div class="form-group">
+                <label for="purpose" class="form-label">Purpose of Appointment</label>
+                <textarea id="purpose" name="Purpose" class="form-control textarea" placeholder="Please briefly describe the reason for your appointment" required></textarea>
+            </div>
+
+            <button type="submit" class="submit-button">Schedule Appointment</button>
+        </form>
+    </div>
+
+    <div class="appointment-list">
+        <h2>Your Upcoming Appointments</h2>
+
+        @if (Model != null && Model.Any())
+        {
+            @foreach (var appointment in Model)
+            {
+                <div class="appointment-card">
+                    <div class="appointment-header">
+                        <div class="appointment-title">
+                            <h3>Appointment with @appointment.Volunteer.FirstName @appointment.Volunteer.LastName</h3>
+                            <div class="appointment-meta">
+                                <span>Appointment ID: #@appointment.AppointmentId</span>
+                            </div>
+                        </div>
+                        <div class="appointment-status status-@appointment.Status.ToLower()">
+                            @appointment.Status
+                        </div>
+                    </div>
+                    <div class="appointment-details">
+                        <div class="appointment-detail">
+                            <div class="appointment-detail-label">Date</div>
+                            <div class="appointment-detail-value">@appointment.AppointmentDate.ToString("MMMM dd, yyyy")</div>
+                        </div>
+                        <div class="appointment-detail">
+                            <div class="appointment-detail-label">Time</div>
+                            <div class="appointment-detail-value">@appointment.AppointmentDate.ToString("h:mm tt")</div>
+                        </div>
+                        <div class="appointment-detail">
+                            <div class="appointment-detail-label">Purpose</div>
+                            <div class="appointment-detail-value">@appointment.Purpose</div>
+                        </div>
+                    </div>
+                    <div class="appointment-actions">
+                        <a href="/Appointment/Reschedule/@appointment.AppointmentId" class="appointment-button reschedule">Reschedule</a>
+                        <a href="/Appointment/Cancel/@appointment.AppointmentId" class="appointment-button cancel">Cancel</a>
+                    </div>
+                </div>
+            }
+        }
+        else
+        {
+            <div class="empty-state">
+                <div class="empty-state-icon">
+                    <i class="bi bi-calendar"></i>
+                </div>
+                <h3>No Upcoming Appointments</h3>
+                <p>You don't have any scheduled appointments. Use the form above to schedule your first appointment with one of our volunteers.</p>
+            </div>
+        }
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        // Add Bootstrap Icons if not already included in layout
+        if (!document.querySelector('link[href*="bootstrap-icons"]')) {
+            const iconLink = document.createElement('link');
+            iconLink.rel = 'stylesheet';
+            iconLink.href = 'https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css';
+            document.head.appendChild(iconLink);
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            // Calendar day selection
+            const calendarDays = document.querySelectorAll('.calendar-day:not(.other-month)');
+            const selectedDateInput = document.getElementById('selected-date');
+
+            calendarDays.forEach(day => {
+                day.addEventListener('click', function() {
+                    // Remove selected class from all days
+                    calendarDays.forEach(d => d.classList.remove('selected'));
+
+                    // Add selected class to clicked day
+                    this.classList.add('selected');
+
+                    // Get the day number and month/year from calendar title
+                    const dayNumber = this.querySelector('.calendar-day-number').textContent;
+                    const monthYear = document.querySelector('.calendar-title').textContent;
+
+                    // Update selected date input
+                    selectedDateInput.value = `${monthYear} ${dayNumber}, 2025`;
+                });
+            });
+
+            // Time slot selection
+            const timeSlots = document.querySelectorAll('.time-slot:not(.unavailable)');
+            const selectedTimeInput = document.getElementById('selected-time');
+
+            timeSlots.forEach(slot => {
+                slot.addEventListener('click', function() {
+                    // Remove selected class from all time slots
+                    timeSlots.forEach(s => s.classList.remove('selected'));
+
+                    // Add selected class to clicked time slot
+                    this.classList.add('selected');
+
+                    // Update selected time input
+                    selectedTimeInput.value = this.getAttribute('data-time');
+                });
+            });
+
+            // Volunteer selection
+            const volunteerCards = document.querySelectorAll('.volunteer-card');
+            const selectedVolunteerInput = document.getElementById('selected-volunteer');
+
+            volunteerCards.forEach(card => {
+                card.addEventListener('click', function() {
+                    // Remove selected class from all volunteer cards
+                    volunteerCards.forEach(c => c.classList.remove('selected'));
+
+                    // Add selected class to clicked volunteer card
+                    this.classList.add('selected');
+
+                    // Update selected volunteer input
+                    selectedVolunteerInput.value = this.getAttribute('data-volunteer-id');
+                });
+            });
+        });
+    </script>
+}

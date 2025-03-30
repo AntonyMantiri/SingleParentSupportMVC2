@@ -1,0 +1,226 @@
+﻿@{
+    ViewData["Title"] = "Services";
+    Layout = "_Layout";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/pages/services.css" />
+}
+
+<div class="page-header">
+    <div class="container">
+        <h1>Our Services</h1>
+        <p>Comprehensive support services designed for single parents</p>
+    </div>
+</div>
+
+<div class="container">
+    <div class="services-intro">
+        <p>At Single Parents Support, we offer a range of services designed to address the unique challenges faced by single parents. Whether you need emotional support, practical resources, or community connection, we're here to help.</p>
+    </div>
+
+    <div class="service-tabs">
+        <div class="service-tab active" data-target="chat-support">Online Chat Support</div>
+        <div class="service-tab" data-target="mental-wellbeing">Mental Wellbeing</div>
+        <div class="service-tab" data-target="spiritual-support">Spiritual Support</div>
+        <div class="service-tab" data-target="physical-wellbeing">Physical Wellbeing</div>
+        <div class="service-tab" data-target="volunteer-services">Volunteer Services</div>
+        <div class="service-tab" data-target="resource-library">Resource Library</div>
+    </div>
+
+    <!-- Online Chat Support Section -->
+    <div class="service-section" id="chat-support">
+        <div class="service-header">
+            <div class="service-icon">
+                <i class="bi bi-chat-dots"></i>
+            </div>
+            <div class="service-title">
+                <h2>Online Chat Support</h2>
+                <p>Connect with volunteers and professionals for real-time support and guidance</p>
+            </div>
+        </div>
+
+        <div class="service-description">
+            <p>Our online chat support service provides a safe space for single parents to connect with trained volunteers and professional counselors. Whether you need someone to listen, advice on specific challenges, or guidance on resources, our chat support is available to help.</p>
+        </div>
+
+        <div class="service-features">
+            <div class="row">
+                <div class="col-md-6 mb-4">
+                    <div class="feature-item">
+                        <div class="feature-icon">
+                            <i class="bi bi-person"></i>
+                        </div>
+                        <div class="feature-content">
+                            <h3>One-on-One Support</h3>
+                            <p>Connect privately with a support volunteer or professional counselor for personalized assistance.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 mb-4">
+                    <div class="feature-item">
+                        <div class="feature-icon">
+                            <i class="bi bi-people"></i>
+                        </div>
+                        <div class="feature-content">
+                            <h3>Group Chat Rooms</h3>
+                            <p>Join topic-specific chat rooms to connect with other single parents facing similar challenges.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 mb-4">
+                    <div class="feature-item">
+                        <div class="feature-icon">
+                            <i class="bi bi-calendar-check"></i>
+                        </div>
+                        <div class="feature-content">
+                            <h3>Scheduled Sessions</h3>
+                            <p>Book scheduled chat sessions with professional counselors for ongoing support.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 mb-4">
+                    <div class="feature-item">
+                        <div class="feature-icon">
+                            <i class="bi bi-shield-check"></i>
+                        </div>
+                        <div class="feature-content">
+                            <h3>24/7 Crisis Support</h3>
+                            <p>Access emergency support at any time through our crisis chat line.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="cta-buttons">
+            <a href="/Chat" class="cta-button">Start Chatting Now</a>
+            <a href="/Appointment/Schedule" class="cta-button secondary">Schedule a Session</a>
+        </div>
+
+        <div class="testimonial">
+            <p class="testimonial-text">"The chat support has been a lifeline for me. Being able to connect with someone who understands at any time of day has made such a difference in my journey as a single parent."</p>
+            <p class="testimonial-author">- Rebecca T., Single Mother</p>
+        </div>
+
+        <div class="faq-section">
+            <h3>Frequently Asked Questions</h3>
+            <div class="faq-item">
+                <div class="faq-question">Who will I be chatting with?</div>
+                <div class="faq-answer">Our chat support is staffed by trained volunteers and professional counselors who specialize in supporting single parents.</div>
+            </div>
+            <div class="faq-item">
+                <div class="faq-question">Is the chat service confidential?</div>
+                <div class="faq-answer">Yes, all one-on-one chats are completely confidential. Group chats are monitored to ensure a safe environment for all participants.</div>
+            </div>
+            <div class="faq-item">
+                <div class="faq-question">How do I schedule a session with a professional counselor?</div>
+                <div class="faq-answer">You can schedule a session through your account dashboard or by contacting our support team.</div>
+            </div>
+        </div>
+
+        <div class="related-resources">
+            <h3>Related Resources</h3>
+            <div class="resource-list">
+                <div class="resource-item">
+                    <h4>Guide to Effective Communication</h4>
+                    <p>Learn communication strategies for difficult conversations.</p>
+                    <a href="/Resource/Details/5" class="btn btn-outline-primary">Read More</a>
+                </div>
+                <div class="resource-item">
+                    <h4>Coping with Emotional Challenges</h4>
+                    <p>Strategies for managing stress, grief, and other emotions.</p>
+                    <a href="/Resource/Details/3" class="btn btn-outline-primary">Read More</a>
+                </div>
+                <div class="resource-item">
+                    <h4>Building Your Support Network</h4>
+                    <p>Tips for creating a strong support system as a single parent.</p>
+                    <a href="/Resource/Details/6" class="btn btn-outline-primary">Read More</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Other service sections would be similar but hidden by default -->
+    <div class="service-section" id="mental-wellbeing" style="display: none;">
+        <!-- Mental Wellbeing content -->
+    </div>
+
+    <div class="service-section" id="spiritual-support" style="display: none;">
+        <!-- Spiritual Support content -->
+    </div>
+
+    <div class="service-section" id="physical-wellbeing" style="display: none;">
+        <!-- Physical Wellbeing content -->
+    </div>
+
+    <div class="service-section" id="volunteer-services" style="display: none;">
+        <!-- Volunteer Services content -->
+    </div>
+
+    <div class="service-section" id="resource-library" style="display: none;">
+        <!-- Resource Library content -->
+    </div>
+</div>
+
+<div class="cta-section">
+    <div class="container">
+        <h2>Need Personalized Support?</h2>
+        <p>Our team is ready to help you find the right services for your specific situation.</p>
+        <div class="cta-buttons">
+            <a href="/Contact" class="cta-button white">Contact Us</a>
+            <a href="/Appointment/Schedule" class="cta-button white">Schedule a Consultation</a>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        // Add Bootstrap Icons if not already included in layout
+        if (!document.querySelector('link[href*="bootstrap-icons"]')) {
+            const iconLink = document.createElement('link');
+            iconLink.rel = 'stylesheet';
+            iconLink.href = 'https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css';
+            document.head.appendChild(iconLink);
+        }
+
+        // Tab functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const tabs = document.querySelectorAll('.service-tab');
+            const sections = document.querySelectorAll('.service-section');
+
+            tabs.forEach(tab => {
+                tab.addEventListener('click', function() {
+                    // Remove active class from all tabs
+                    tabs.forEach(t => t.classList.remove('active'));
+
+                    // Add active class to clicked tab
+                    this.classList.add('active');
+
+                    // Hide all sections
+                    sections.forEach(section => {
+                        section.style.display = 'none';
+                    });
+
+                    // Show the corresponding section
+                    const targetId = this.getAttribute('data-target');
+                    document.getElementById(targetId).style.display = 'block';
+                });
+            });
+
+            // FAQ functionality
+            const faqQuestions = document.querySelectorAll('.faq-question');
+
+            faqQuestions.forEach(question => {
+                question.addEventListener('click', function() {
+                    // Toggle active class
+                    this.classList.toggle('active');
+
+                    // Toggle answer visibility
+                    const answer = this.nextElementSibling;
+                    answer.classList.toggle('show');
+                });
+            });
+        });
+    </script>
+}

@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
 
-namespace YourAppName.Controllers
+namespace SingleParentSupport2.Controllers
 {
     public class AccountController : Controller
     {

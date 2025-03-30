@@ -1,0 +1,372 @@
+/* Services Page Styles */
+.page-header {
+    background-color: #f8f9fa;
+    padding: 60px 0;
+    text-align: center;
+    margin-bottom: 40px;
+    border-radius: 8px;
+}
+
+    .page-header h1 {
+        font-size: 2.5rem;
+        margin-bottom: 20px;
+        color: #343a40;
+    }
+
+    .page-header p {
+        font-size: 1.2rem;
+        color: #6c757d;
+        max-width: 800px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+.services-intro {
+    text-align: center;
+    margin-bottom: 50px;
+}
+
+    .services-intro p {
+        color: #6c757d;
+        max-width: 800px;
+        margin-left: auto;
+        margin-right: auto;
+        line-height: 1.8;
+    }
+
+.service-tabs {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-bottom: 40px;
+    border-bottom: 1px solid #dee2e6;
+}
+
+.service-tab {
+    padding: 15px 25px;
+    margin: 0 5px;
+    cursor: pointer;
+    border-bottom: 3px solid transparent;
+    color: #6c757d;
+    font-weight: 600;
+    transition: all 0.3s;
+}
+
+    .service-tab:hover {
+        color: #5a67d8;
+    }
+
+    .service-tab.active {
+        border-bottom-color: #5a67d8;
+        color: #5a67d8;
+    }
+
+.service-section {
+    padding: 40px;
+    margin-bottom: 40px;
+    background-color: #f8f9fa;
+    border-radius: 8px;
+}
+
+.service-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 30px;
+}
+
+.service-icon {
+    width: 80px;
+    height: 80px;
+    background-color: #ebf4ff;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 20px;
+    color: #5a67d8;
+    font-size: 2rem;
+    flex-shrink: 0;
+}
+
+.service-title {
+    flex-grow: 1;
+}
+
+    .service-title h2 {
+        color: #343a40;
+        margin-bottom: 10px;
+    }
+
+    .service-title p {
+        color: #6c757d;
+        margin-bottom: 0;
+    }
+
+.service-description {
+    color: #6c757d;
+    line-height: 1.8;
+    margin-bottom: 30px;
+}
+
+.service-features {
+    margin: 40px 0;
+}
+
+.feature-item {
+    display: flex;
+    align-items: flex-start;
+    margin-bottom: 30px;
+    padding: 20px;
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+
+    .feature-item:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
+    }
+
+.feature-icon {
+    width: 50px;
+    height: 50px;
+    background-color: #ebf4ff;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 20px;
+    color: #5a67d8;
+    font-size: 1.5rem;
+    flex-shrink: 0;
+}
+
+.feature-content {
+    flex-grow: 1;
+}
+
+    .feature-content h3 {
+        color: #343a40;
+        margin-bottom: 10px;
+    }
+
+    .feature-content p {
+        color: #6c757d;
+        margin-bottom: 0;
+    }
+
+.cta-buttons {
+    margin: 30px 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+}
+
+.cta-button {
+    display: inline-block;
+    padding: 12px 30px;
+    background-color: #5a67d8;
+    color: white;
+    text-decoration: none;
+    border-radius: 5px;
+    font-weight: 600;
+    transition: background-color 0.3s;
+}
+
+    .cta-button:hover {
+        background-color: #4c51bf;
+        color: white;
+        text-decoration: none;
+    }
+
+    .cta-button.secondary {
+        background-color: transparent;
+        border: 2px solid #5a67d8;
+        color: #5a67d8;
+    }
+
+        .cta-button.secondary:hover {
+            background-color: #5a67d8;
+            color: white;
+        }
+
+.testimonial {
+    margin: 40px 0;
+    padding: 30px;
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.testimonial-text {
+    font-style: italic;
+    color: #6c757d;
+    margin-bottom: 20px;
+    line-height: 1.8;
+}
+
+.testimonial-author {
+    font-weight: 600;
+    color: #343a40;
+}
+
+.faq-section {
+    margin: 40px 0;
+}
+
+    .faq-section h3 {
+        color: #343a40;
+        margin-bottom: 20px;
+    }
+
+.faq-item {
+    margin-bottom: 20px;
+    border: 1px solid #dee2e6;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.faq-question {
+    padding: 15px 20px;
+    background-color: #f8f9fa;
+    font-weight: 600;
+    color: #343a40;
+    cursor: pointer;
+    position: relative;
+}
+
+    .faq-question:after {
+        content: '+';
+        position: absolute;
+        right: 20px;
+        top: 50%;
+        transform: translateY(-50%);
+        font-size: 1.5rem;
+    }
+
+    .faq-question.active:after {
+        content: '-';
+    }
+
+.faq-answer {
+    padding: 15px 20px;
+    color: #6c757d;
+    display: none;
+}
+
+    .faq-answer.show {
+        display: block;
+    }
+
+.related-resources {
+    margin: 40px 0;
+}
+
+    .related-resources h3 {
+        color: #343a40;
+        margin-bottom: 20px;
+    }
+
+.resource-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 20px;
+}
+
+.resource-item {
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+
+    .resource-item:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    .resource-item h4 {
+        color: #343a40;
+        margin-bottom: 10px;
+    }
+
+    .resource-item p {
+        color: #6c757d;
+        margin-bottom: 15px;
+    }
+
+.cta-section {
+    background-color: #5a67d8;
+    color: white;
+    padding: 60px 0;
+    text-align: center;
+    border-radius: 8px;
+    margin: 40px 0;
+}
+
+    .cta-section h2 {
+        margin-bottom: 20px;
+    }
+
+    .cta-section p {
+        margin-bottom: 30px;
+        max-width: 800px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+.cta-button.white {
+    background-color: white;
+    color: #5a67d8;
+}
+
+    .cta-button.white:hover {
+        background-color: #f8f9fa;
+        color: #4c51bf;
+    }
+
+@media (max-width: 768px) {
+    .service-tabs {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .service-tab {
+        margin-bottom: 10px;
+        width: 100%;
+        text-align: center;
+    }
+
+    .service-header {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .service-icon {
+        margin-right: 0;
+        margin-bottom: 20px;
+    }
+
+    .feature-item {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+    }
+
+    .feature-icon {
+        margin-right: 0;
+        margin-bottom: 15px;
+    }
+
+    .cta-buttons {
+        flex-direction: column;
+    }
+
+    .cta-button {
+        width: 100%;
+        text-align: center;
+        margin-bottom: 10px;
+    }
+}

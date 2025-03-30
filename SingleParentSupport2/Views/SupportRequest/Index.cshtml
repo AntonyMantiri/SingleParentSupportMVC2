@@ -1,0 +1,107 @@
+﻿@{
+    ViewData["Title"] = "Support Requests";
+    Layout = "_Layout";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/pages/supportrequest.css" />
+}
+
+<div class="page-header">
+    <div class="container">
+        <h1>Support Requests</h1>
+        <p>Submit a new support request or view your existing requests</p>
+    </div>
+</div>
+
+<div class="container support-container">
+    <div class="support-form">
+        <h2>Submit a New Support Request</h2>
+        <p>Please provide details about your request, and our team will respond as soon as possible.</p>
+
+        <form asp-action="Create" asp-controller="SupportRequest" method="post">
+            <div class="validation-summary-errors" asp-validation-summary="All" style="display:none;"></div>
+
+            <div class="form-group">
+                <label for="requestType" class="form-label">Request Type*</label>
+                <select id="requestType" name="RequestType" class="form-control" required>
+                    <option value="">Select request type</option>
+                    <option value="General">General Inquiry</option>
+                    <option value="Legal">Legal Support</option>
+                    <option value="Financial">Financial Assistance</option>
+                    <option value="Emotional">Emotional Support</option>
+                    <option value="Other">Other</option>
+                </select>
+                <span class="field-validation-error" data-valmsg-for="RequestType" data-valmsg-replace="true"></span>
+            </div>
+
+            <div class="form-group">
+                <label for="subject" class="form-label">Subject*</label>
+                <input type="text" id="subject" name="Subject" class="form-control" placeholder="Brief description of your request" required>
+                <span class="field-validation-error" data-valmsg-for="Subject" data-valmsg-replace="true"></span>
+            </div>
+
+            <div class="form-group">
+                <label for="requestText" class="form-label">Request Details*</label>
+                <textarea id="requestText" name="RequestText" class="form-control textarea" placeholder="Please provide detailed information about your request" required></textarea>
+                <span class="field-validation-error" data-valmsg-for="RequestText" data-valmsg-replace="true"></span>
+            </div>
+
+            <button type="submit" class="submit-button">Submit Request</button>
+        </form>
+    </div>
+
+    <div class="support-list">
+        <h2>Your Support Requests</h2>
+
+        @if (Model != null && Model.Any())
+        {
+            @foreach (var request in Model)
+            {
+                <div class="support-card">
+                    <div class="support-header">
+                        <div class="support-title">
+                            <h3>@request.Subject</h3>
+                            <div class="support-meta">
+                                <span>Request ID: #@request.RequestId</span> |
+                                <span>Type: @request.RequestType</span> |
+                                <span>Submitted: @request.RequestDate.ToString("MMM dd, yyyy")</span>
+                            </div>
+                        </div>
+                        <div class="support-status status-@request.Status.ToLower()">
+                            @request.Status
+                        </div>
+                    </div>
+                    <div class="support-content">
+                        @(request.RequestText.Length > 150 ? request.RequestText.Substring(0, 150) + "..." : request.RequestText)
+                    </div>
+                    <div class="support-actions">
+                        <a href="/SupportRequest/Details/@request.RequestId" class="support-button view">View Details</a>
+                    </div>
+                </div>
+            }
+        }
+        else
+        {
+            <div class="empty-state">
+                <div class="empty-state-icon">
+                    <i class="bi bi-inbox"></i>
+                </div>
+                <h3>No Support Requests Yet</h3>
+                <p>You haven't submitted any support requests yet. Use the form above to submit your first request.</p>
+            </div>
+        }
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        // Add Bootstrap Icons if not already included in layout
+        if (!document.querySelector('link[href*="bootstrap-icons"]')) {
+            const iconLink = document.createElement('link');
+            iconLink.rel = 'stylesheet';
+            iconLink.href = 'https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css';
+            document.head.appendChild(iconLink);
+        }
+    </script>
+}
