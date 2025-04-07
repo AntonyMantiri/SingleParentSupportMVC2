@@ -1,4 +1,5 @@
-﻿@{
+﻿@model AccessDeniedViewModel
+@{
     ViewData["Title"] = "Access Denied";
     Layout = "_Layout";
 }
@@ -23,6 +24,12 @@
                 </div>
                 <h2>Access Denied</h2>
                 <p>Sorry, you don't have permission to access this page or resource. This area may be restricted to certain user roles or accounts.</p>
+
+                @if (!string.IsNullOrEmpty(Model?.ReturnUrl))
+                {
+                    <p class="text-danger">You were trying to access: @Model.ReturnUrl</p>
+                }
+
                 <div class="access-denied-actions">
                     <a href="/" class="btn btn-primary">Return to Home</a>
                     <a href="/Account/Login" class="btn btn-outline-primary">Sign in with a different account</a>

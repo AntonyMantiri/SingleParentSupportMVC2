@@ -21,6 +21,10 @@
             <div class="login-card">
                 <div class="login-options">
                     <h2>Sign in with</h2>
+
+                    <!-- Validation Summary to display login errors -->
+                    <div asp-validation-summary="All" class="text-danger mb-3"></div>
+
                     <div class="social-login">
                         <form asp-action="ExternalLogin" asp-controller="Account" method="post">
                             <input type="hidden" name="returnUrl" value="@ViewData["ReturnUrl"]" />
@@ -63,10 +67,10 @@
                             <li>Access the chat support system</li>
                             <li>Track your appointments and requests</li>
                         </ul>
-                        
+
                         <div class="demo-credentials mt-3">
-                            <!--  <p><strong>Demo Account:</strong> admin@singleparentsupport.com / Admin123!</p> -->
-                                                    </div>
+                            <p><strong>Demo Account:</strong> admin@singleparentsupport.com / Admin123!</p>
+                        </div>
                     </div>
                 </div>
             </div>
