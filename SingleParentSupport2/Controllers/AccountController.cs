@@ -1,41 +1,160 @@
 ﻿using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
+using SingleParentSupport2.Models;
 
 namespace SingleParentSupport2.Controllers
 {
     public class AccountController : Controller
     {
-        public IActionResult Login(string returnUrl = "/")
+        private readonly SignInManager<ApplicationUser> _signInManager;
+        private readonly UserManager<ApplicationUser> _userManager;
+        private readonly ILogger<AccountController> _logger;
+
+        public AccountController(
+            SignInManager<ApplicationUser> signInManager,
+            UserManager<ApplicationUser> userManager,
+            ILogger<AccountController> logger)
         {
-            var redirectUrl = Url.Action("GoogleResponse", "Account", new { ReturnUrl = returnUrl });
-            var properties = new AuthenticationProperties { RedirectUri = redirectUrl };
-            return Challenge(properties, "Google");
+            _signInManager = signInManager;
+            _userManager = userManager;
+            _logger = logger;
         }
 
-        public async Task<IActionResult> GoogleResponse(string returnUrl = "/")
+        [HttpGet]
+        public IActionResult Login(string returnUrl = "/")
         {
-            var result = await HttpContext.AuthenticateAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+            ViewData["ReturnUrl"] = returnUrl;
+            return View();
+        }
 
-            if (result?.Principal is not null)
+        [HttpPost]
+        public async Task<IActionResult> Login(LoginViewModel model)
+        {
+            if (!ModelState.IsValid)
             {
-                var claims = result.Principal.Identities
-                            .FirstOrDefault()?.Claims.Select(claim => new
-                            {
-                                claim.Type,
-                                claim.Value
-                            });
-
-                return RedirectToAction("Index", "Home");
+                return View(model);
             }
 
-            return RedirectToAction("Login");
+            // This doesn't count login failures towards account lockout
+            // To enable password failures to trigger account lockout, set lockoutOnFailure: true
+            var result = await _signInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, lockoutOnFailure: false);
+
+            if (result.Succeeded)
+            {
+                _logger.LogInformation("User logged in.");
+                return LocalRedirect(model.ReturnUrl ?? "/");
+            }
+            if (result.RequiresTwoFactor)
+            {
+                return RedirectToPage("./LoginWith2fa", new { ReturnUrl = model.ReturnUrl, RememberMe = model.RememberMe });
+            }
+            if (result.IsLockedOut)
+            {
+                _logger.LogWarning("User account locked out.");
+                return RedirectToPage("./Lockout");
+            }
+            else
+            {
+                ModelState.AddModelError(string.Empty, "Invalid login attempt.");
+                return View(model);
+            }
+        }
+
+        [HttpPost]
+        public IActionResult ExternalLogin(string provider, string returnUrl = "/")
+        {
+            // Request a redirect to the external login provider
+            var redirectUrl = Url.Action("ExternalLoginCallback", "Account", new { ReturnUrl = returnUrl });
+            var properties = _signInManager.ConfigureExternalAuthenticationProperties(provider, redirectUrl);
+            return Challenge(properties, provider);
+        }
+
+        public async Task<IActionResult> ExternalLoginCallback(string returnUrl = "/", string remoteError = null)
+        {
+            returnUrl = returnUrl ?? Url.Content("~/");
+
+            if (remoteError != null)
+            {
+                ModelState.AddModelError(string.Empty, $"Error from external provider: {remoteError}");
+                return RedirectToAction(nameof(Login));
+            }
+
+            // Get the login info about the user from the external login provider
+            var info = await _signInManager.GetExternalLoginInfoAsync();
+            if (info == null)
+            {
+                return RedirectToAction(nameof(Login));
+            }
+
+            // Sign in the user with this external login provider if the user already has a login
+            var result = await _signInManager.ExternalLoginSignInAsync(info.LoginProvider, info.ProviderKey, isPersistent: false, bypassTwoFactor: true);
+
+            if (result.Succeeded)
+            {
+                _logger.LogInformation("{Name} logged in with {LoginProvider} provider.", info.Principal.Identity.Name, info.LoginProvider);
+                return LocalRedirect(returnUrl);
+            }
+
+            if (result.IsLockedOut)
+            {
+                return RedirectToPage("./Lockout");
+            }
+            else
+            {
+                // If the user does not have an account, then create one
+                var email = info.Principal.FindFirstValue(ClaimTypes.Email);
+                var user = new ApplicationUser
+                {
+                    UserName = email,
+                    Email = email,
+                    EmailConfirmed = true,
+                    FirstName = info.Principal.FindFirstValue(ClaimTypes.GivenName) ?? "",
+                    LastName = info.Principal.FindFirstValue(ClaimTypes.Surname) ?? "",
+                    JoinDate = DateTime.Now
+                };
+
+                var createResult = await _userManager.CreateAsync(user);
+                if (createResult.Succeeded)
+                {
+                    // Add to default User role
+                    await _userManager.AddToRoleAsync(user, "User");
+
+                    createResult = await _userManager.AddLoginAsync(user, info);
+                    if (createResult.Succeeded)
+                    {
+                        await _signInManager.SignInAsync(user, isPersistent: false);
+                        _logger.LogInformation("User created an account using {Name} provider.", info.LoginProvider);
+                        return LocalRedirect(returnUrl);
+                    }
+                }
+
+                foreach (var error in createResult.Errors)
+                {
+                    ModelState.AddModelError(string.Empty, error.Description);
+                }
+
+                return RedirectToAction(nameof(Login));
+            }
         }
 
         public async Task<IActionResult> Logout()
         {
-            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+            await _signInManager.SignOutAsync();
+            _logger.LogInformation("User logged out.");
             return RedirectToAction("Index", "Home");
+        }
+
+        public IActionResult AccessDenied()
+        {
+            return View();
+        }
+
+        public IActionResult Profile()
+        {
+            return View();
         }
     }
 }

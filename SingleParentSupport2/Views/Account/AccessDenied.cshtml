@@ -1,0 +1,33 @@
+﻿@{
+    ViewData["Title"] = "Access Denied";
+    Layout = "_Layout";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/pages/account.css" />
+}
+
+<div class="page-header">
+    <div class="container">
+        <h1>Access Denied</h1>
+        <p>You do not have permission to access this resource</p>
+    </div>
+</div>
+
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="access-denied-card">
+                <div class="access-denied-icon">
+                    <i class="bi bi-shield-lock"></i>
+                </div>
+                <h2>Access Denied</h2>
+                <p>Sorry, you don't have permission to access this page or resource. This area may be restricted to certain user roles or accounts.</p>
+                <div class="access-denied-actions">
+                    <a href="/" class="btn btn-primary">Return to Home</a>
+                    <a href="/Account/Login" class="btn btn-outline-primary">Sign in with a different account</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,30 +1,22 @@
 ﻿using System;
-using System.ComponentModel.DataAnnotations;
 
 namespace SingleParentSupport2.Models
 {
     public class Appointment
     {
-        [Key]
-        public int AppointmentId { get; set; }
-
-        [Required]
-        public int UserId { get; set; }
-
-        [Required]
-        public int VolunteerId { get; set; }
-
-        [Required]
+        public int Id { get; set; }
+        public string UserId { get; set; }
+        public string VolunteerId { get; set; }
         public DateTime AppointmentDate { get; set; }
-
-        [Required]
+        public string AppointmentTime { get; set; }
         public string Purpose { get; set; }
-
-        [Required]
         public string Status { get; set; }
+        public string Notes { get; set; }
+        public DateTime CreatedDate { get; set; }
+        public DateTime? UpdatedDate { get; set; }
 
         // Navigation properties
-        public User User { get; set; }
-        public User Volunteer { get; set; }
+        public ApplicationUser User { get; set; }
+        public ApplicationUser Volunteer { get; set; }
     }
 }

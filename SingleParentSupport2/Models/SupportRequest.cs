@@ -1,28 +1,23 @@
 ﻿using System;
-using System.ComponentModel.DataAnnotations;
 
 namespace SingleParentSupport2.Models
 {
     public class SupportRequest
     {
-        [Key]
-        public int RequestId { get; set; }
-
-        [Required]
-        public int UserId { get; set; }
-
-        [Required]
+        public int Id { get; set; }
+        public string UserId { get; set; }
+        public string Name { get; set; }
+        public string Email { get; set; }
+        public string Phone { get; set; }
         public string RequestType { get; set; }
-
-        [Required]
-        public string RequestText { get; set; }
-
+        public string Description { get; set; }
         public DateTime RequestDate { get; set; }
-
-        [Required]
         public string Status { get; set; }
+        public string Response { get; set; }
+        public DateTime? ResponseDate { get; set; }
+        public string ResponderId { get; set; }
 
         // Navigation property
-        public User User { get; set; }
+        public ApplicationUser User { get; set; }
     }
 }

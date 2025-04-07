@@ -1,0 +1,107 @@
+﻿@model ProfileViewModel
+@{
+    ViewData["Title"] = "User Profile";
+    Layout = "_Layout";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/pages/account.css" />
+}
+
+<div class="page-header">
+    <div class="container">
+        <h1>My Profile</h1>
+        <p>Manage your account information</p>
+    </div>
+</div>
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-4">
+            <div class="profile-sidebar">
+                <div class="profile-image">
+                    @if (!string.IsNullOrEmpty(Model.ProfilePicture))
+                    {
+                        <img src="@Model.ProfilePicture" alt="@Model.FirstName @Model.LastName" />
+                    }
+                    else
+                    {
+                        <img src="https://via.placeholder.com/150" alt="Profile Picture" />
+                    }
+                </div>
+                <div class="profile-info">
+                    <h2>@Model.FirstName @Model.LastName</h2>
+                    <p class="profile-email">@Model.Email</p>
+                    <p class="profile-joined">Member since @Model.JoinDate.ToString("MMMM yyyy")</p>
+
+                    @if (Model.Roles.Any())
+                    {
+                        <div class="profile-roles">
+                            @foreach (var role in Model.Roles)
+                            {
+                                <span class="role-badge @role.ToLower()">@role</span>
+                            }
+                        </div>
+                    }
+                </div>
+                <div class="profile-actions">
+                    <a href="#" class="btn btn-outline-primary btn-block">Edit Profile</a>
+                    <a href="/Account/Logout" class="btn btn-outline-danger btn-block">Logout</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-8">
+            <div class="profile-content">
+                <div class="profile-section">
+                    <h3>My Activity</h3>
+                    <div class="activity-stats">
+                        <div class="activity-stat">
+                            <div class="stat-number">0</div>
+                            <div class="stat-label">Support Requests</div>
+                        </div>
+                        <div class="activity-stat">
+                            <div class="stat-number">0</div>
+                            <div class="stat-label">Appointments</div>
+                        </div>
+                        <div class="activity-stat">
+                            <div class="stat-number">0</div>
+                            <div class="stat-label">Chat Sessions</div>
+                        </div>
+                    </div>
+                </div>
+
+                @if (Model.IsVolunteer)
+                {
+                    <div class="profile-section">
+                        <h3>Volunteer Information</h3>
+                        <div class="volunteer-info">
+                            <div class="form-group">
+                                <label>Role</label>
+                                <p>@Model.VolunteerRole</p>
+                            </div>
+                            <div class="form-group">
+                                <label>Bio</label>
+                                <p>@Model.VolunteerBio</p>
+                            </div>
+                        </div>
+                    </div>
+                }
+
+                <div class="profile-section">
+                    <h3>Recent Activity</h3>
+                    <div class="empty-state">
+                        <div class="empty-state-icon">
+                            <i class="bi bi-calendar-check"></i>
+                        </div>
+                        <h4>No Recent Activity</h4>
+                        <p>You don't have any recent activity. Start by submitting a support request or scheduling an appointment.</p>
+                        <div class="empty-state-actions">
+                            <a href="/SupportRequest" class="btn btn-primary">Submit Support Request</a>
+                            <a href="/Appointment" class="btn btn-outline-primary">Schedule Appointment</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

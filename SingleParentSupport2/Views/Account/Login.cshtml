@@ -1,4 +1,5 @@
-﻿@{
+﻿@model LoginViewModel
+@{
     ViewData["Title"] = "Login";
     Layout = "_Layout";
 }
@@ -7,174 +8,72 @@
     <link rel="stylesheet" href="~/css/pages/account.css" />
 }
 
-<div class="auth-container">
-    <div class="auth-header">
-        <h1>Account Access</h1>
-        <p>Login to your account or register to join our community</p>
+<div class="page-header">
+    <div class="container">
+        <h1>Sign In</h1>
+        <p>Access your Single Parents Support account</p>
     </div>
+</div>
 
-    <div class="auth-tabs">
-        <div class="auth-tab active" id="login-tab">Login</div>
-        <div class="auth-tab" id="register-tab">Register</div>
-    </div>
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="login-card">
+                <div class="login-options">
+                    <h2>Sign in with</h2>
+                    <div class="social-login">
+                        <form asp-action="ExternalLogin" asp-controller="Account" method="post">
+                            <input type="hidden" name="returnUrl" value="@ViewData["ReturnUrl"]" />
+                            <button type="submit" name="provider" value="Google" class="btn btn-google">
+                                <i class="bi bi-google"></i> Google
+                            </button>
+                        </form>
+                    </div>
 
-    <div id="login-form">
-        <form asp-action="Login" asp-controller="Account" method="post">
-            <div class="validation-summary-errors" asp-validation-summary="All" style="display:none;"></div>
+                    <div class="login-divider">
+                        <span>or</span>
+                    </div>
 
-            <div class="form-group">
-                <label for="email" class="form-label">Email Address</label>
-                <input type="email" id="email" name="Email" class="form-control" required>
-                <span class="field-validation-error" data-valmsg-for="Email" data-valmsg-replace="true"></span>
+                    <div class="email-login">
+                        <form asp-action="Login" asp-controller="Account" method="post">
+                            <input type="hidden" name="returnUrl" value="@ViewData["ReturnUrl"]" />
+                            <div class="form-group">
+                                <label asp-for="Email">Email</label>
+                                <input asp-for="Email" class="form-control" required />
+                                <span asp-validation-for="Email" class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="Password">Password</label>
+                                <input asp-for="Password" class="form-control" required />
+                                <span asp-validation-for="Password" class="text-danger"></span>
+                            </div>
+                            <div class="form-group form-check">
+                                <input asp-for="RememberMe" class="form-check-input" />
+                                <label asp-for="RememberMe" class="form-check-label">Remember me</label>
+                            </div>
+                            <button type="submit" class="btn btn-primary btn-block">Sign in with Email</button>
+                        </form>
+                    </div>
+
+                    <div class="login-info mt-4">
+                        <p>By signing in, you'll be able to:</p>
+                        <ul>
+                            <li>Submit support requests</li>
+                            <li>Schedule appointments with volunteers</li>
+                            <li>Access the chat support system</li>
+                            <li>Track your appointments and requests</li>
+                        </ul>
+                        
+                        <div class="demo-credentials mt-3">
+                            <!--  <p><strong>Demo Account:</strong> admin@singleparentsupport.com / Admin123!</p> -->
+                                                    </div>
+                    </div>
+                </div>
             </div>
-
-            <div class="form-group">
-                <label for="password" class="form-label">Password</label>
-                <input type="password" id="password" name="Password" class="form-control" required>
-                <span class="field-validation-error" data-valmsg-for="Password" data-valmsg-replace="true"></span>
-            </div>
-
-            <div class="forgot-password">
-                <a href="/Account/ForgotPassword">Forgot Password?</a>
-            </div>
-
-            <div class="form-check">
-                <input type="checkbox" id="remember" name="RememberMe" class="form-check-input">
-                <label for="remember" class="form-check-label">Remember me on this device</label>
-            </div>
-
-            <button type="submit" class="auth-button">Login</button>
-        </form>
-
-        <div class="auth-divider">
-            <span>OR</span>
         </div>
-
-        <a href="/Account/ExternalLogin?provider=Google" class="auth-button google">
-            <i class="bi bi-google"></i> Login with Google
-        </a>
-    </div>
-
-    <div id="register-form" style="display: none;">
-        <form asp-action="Register" asp-controller="Account" method="post">
-            <div class="validation-summary-errors" asp-validation-summary="All" style="display:none;"></div>
-
-            <div class="form-group">
-                <label for="firstName" class="form-label">First Name</label>
-                <input type="text" id="firstName" name="FirstName" class="form-control" required>
-                <span class="field-validation-error" data-valmsg-for="FirstName" data-valmsg-replace="true"></span>
-            </div>
-
-            <div class="form-group">
-                <label for="lastName" class="form-label">Last Name</label>
-                <input type="text" id="lastName" name="LastName" class="form-control" required>
-                <span class="field-validation-error" data-valmsg-for="LastName" data-valmsg-replace="true"></span>
-            </div>
-
-            <div class="form-group">
-                <label for="registerEmail" class="form-label">Email Address</label>
-                <input type="email" id="registerEmail" name="Email" class="form-control" required>
-                <span class="field-validation-error" data-valmsg-for="Email" data-valmsg-replace="true"></span>
-            </div>
-
-            <div class="form-group">
-                <label for="registerPassword" class="form-label">Password</label>
-                <input type="password" id="registerPassword" name="Password" class="form-control" required>
-                <span class="field-validation-error" data-valmsg-for="Password" data-valmsg-replace="true"></span>
-            </div>
-
-            <div class="form-group">
-                <label for="confirmPassword" class="form-label">Confirm Password</label>
-                <input type="password" id="confirmPassword" name="ConfirmPassword" class="form-control" required>
-                <span class="field-validation-error" data-valmsg-for="ConfirmPassword" data-valmsg-replace="true"></span>
-            </div>
-
-            <div class="form-group">
-                <label for="role" class="form-label">I am a:</label>
-                <select id="role" name="Role" class="form-control" required>
-                    <option value="">Select your role</option>
-                    <option value="Parent">Single Parent</option>
-                    <option value="Volunteer">Volunteer</option>
-                </select>
-                <span class="field-validation-error" data-valmsg-for="Role" data-valmsg-replace="true"></span>
-            </div>
-
-            <div class="form-check">
-                <input type="checkbox" id="terms" name="AgreeToTerms" class="form-check-input" required>
-                <label for="terms" class="form-check-label">I agree to the <a href="/Home/Terms" target="_blank">Terms of Service</a> and <a href="/Home/Privacy" target="_blank">Privacy Policy</a></label>
-                <span class="field-validation-error" data-valmsg-for="AgreeToTerms" data-valmsg-replace="true"></span>
-            </div>
-
-            <button type="submit" class="auth-button">Create Account</button>
-        </form>
-
-        <div class="auth-divider">
-            <span>OR</span>
-        </div>
-
-        <a href="/Account/ExternalLogin?provider=Google" class="auth-button google">
-            <i class="bi bi-google"></i> Register with Google
-        </a>
-    </div>
-
-    <div class="auth-footer" id="login-footer">
-        Don't have an account? <a href="#" id="show-register">Register Now</a>
-    </div>
-
-    <div class="auth-footer" id="register-footer" style="display: none;">
-        Already have an account? <a href="#" id="show-login">Login</a>
     </div>
 </div>
 
 @section Scripts {
-    <script>
-        // Add Bootstrap Icons if not already included in layout
-        if (!document.querySelector('link[href*="bootstrap-icons"]')) {
-            const iconLink = document.createElement('link');
-            iconLink.rel = 'stylesheet';
-            iconLink.href = 'https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css';
-            document.head.appendChild(iconLink);
-        }
-
-        document.addEventListener('DOMContentLoaded', function() {
-            const loginTab = document.getElementById('login-tab');
-            const registerTab = document.getElementById('register-tab');
-            const loginForm = document.getElementById('login-form');
-            const registerForm = document.getElementById('register-form');
-            const loginFooter = document.getElementById('login-footer');
-            const registerFooter = document.getElementById('register-footer');
-            const showRegister = document.getElementById('show-register');
-            const showLogin = document.getElementById('show-login');
-
-            // Tab switching
-            loginTab.addEventListener('click', function() {
-                loginTab.classList.add('active');
-                registerTab.classList.remove('active');
-                loginForm.style.display = 'block';
-                registerForm.style.display = 'none';
-                loginFooter.style.display = 'block';
-                registerFooter.style.display = 'none';
-            });
-
-            registerTab.addEventListener('click', function() {
-                registerTab.classList.add('active');
-                loginTab.classList.remove('active');
-                registerForm.style.display = 'block';
-                loginForm.style.display = 'none';
-                registerFooter.style.display = 'block';
-                loginFooter.style.display = 'none';
-            });
-
-            // Footer links
-            showRegister.addEventListener('click', function(e) {
-                e.preventDefault();
-                registerTab.click();
-            });
-
-            showLogin.addEventListener('click', function(e) {
-                e.preventDefault();
-                loginTab.click();
-            });
-        });
-    </script>
+    <partial name="_ValidationScriptsPartial" />
 }
