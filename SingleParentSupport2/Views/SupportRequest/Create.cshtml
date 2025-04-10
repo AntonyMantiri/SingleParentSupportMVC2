@@ -1,0 +1,121 @@
+﻿@model SingleParentSupport2.Models.SupportRequestViewModel
+
+@{
+    ViewData["Title"] = "Create Support Request";
+}
+
+<div class="container mt-4">
+    <h1>Create Support Request</h1>
+
+    <div class="card shadow-sm mb-4">
+        <div class="card-header bg-primary text-white">
+            <h5 class="mb-0">Request Details</h5>
+        </div>
+        <div class="card-body">
+            <form asp-action="Create" method="post">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label asp-for="Name" class="form-label">Your Name</label>
+                            <input asp-for="Name" class="form-control" />
+                            <span asp-validation-for="Name" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Email" class="form-label">Email Address</label>
+                            <input asp-for="Email" class="form-control" />
+                            <span asp-validation-for="Email" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Phone" class="form-label">Phone Number</label>
+                            <input asp-for="Phone" class="form-control" />
+                            <span asp-validation-for="Phone" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label asp-for="RequestType" class="form-label">Request Type</label>
+                            <select asp-for="RequestType" class="form-select">
+                                <option value="">-- Select Request Type --</option>
+                                <option value="General Inquiry">General Inquiry</option>
+                                <option value="Emotional Support">Emotional Support</option>
+                                <option value="Legal Advice">Legal Advice</option>
+                                <option value="Financial Assistance">Financial Assistance</option>
+                                <option value="Parenting Support">Parenting Support</option>
+                                <option value="Housing Assistance">Housing Assistance</option>
+                                <option value="Other">Other</option>
+                            </select>
+                            <span asp-validation-for="RequestType" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Description" class="form-label">Description</label>
+                            <textarea asp-for="Description" class="form-control" rows="5" placeholder="Please describe your request in detail..."></textarea>
+                            <span asp-validation-for="Description" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-4">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="bi bi-send"></i> Submit Request
+                    </button>
+                    <a asp-action="Index" class="btn btn-outline-secondary">
+                        <i class="bi bi-arrow-left"></i> Back to List
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        $(document).ready(function() {
+            // Auto-populate name and email if empty
+            if (!$("#Name").val()) {
+                $("#Name").val('@User.Identity.Name');
+            }
+
+            // Form validation
+            $("form").validate({
+                rules: {
+                    RequestType: "required",
+                    Description: {
+                        required: true,
+                        minlength: 20
+                    },
+                    Phone: {
+                        required: true,
+                        phoneUS: true
+                    }
+                },
+                messages: {
+                    RequestType: "Please select a request type",
+                    Description: {
+                        required: "Please provide a description",
+                        minlength: "Description must be at least 20 characters"
+                    },
+                    Phone: {
+                        required: "Please provide a phone number",
+                        phoneUS: "Please enter a valid phone number"
+                    }
+                }
+            });
+
+            // Add US phone validation method if not already defined
+            if ($.validator.methods.phoneUS === undefined) {
+                $.validator.addMethod("phoneUS", function(phone_number, element) {
+                    phone_number = phone_number.replace(/\s+/g, "");
+                    return this.optional(element) || phone_number.length > 9 &&
+                        phone_number.match(/^(\+?1-?)?(\([2-9]([02-9]\d|1[02-9])\)|[2-9]([02-9]\d|1[02-9]))-?[2-9]([02-9]\d|1[02-9])-?\d{4}$/);
+                }, "Please enter a valid phone number");
+            }
+        });
+    </script>
+}

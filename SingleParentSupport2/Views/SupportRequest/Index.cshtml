@@ -1,107 +1,104 @@
-﻿@{
+﻿@model IEnumerable<SingleParentSupport2.Models.SupportRequest>
+
+@{
     ViewData["Title"] = "Support Requests";
-    Layout = "_Layout";
 }
 
-@section Styles {
-    <link rel="stylesheet" href="~/css/pages/supportrequest.css" />
-}
-
-<div class="page-header">
-    <div class="container">
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
         <h1>Support Requests</h1>
-        <p>Submit a new support request or view your existing requests</p>
-    </div>
-</div>
-
-<div class="container support-container">
-    <div class="support-form">
-        <h2>Submit a New Support Request</h2>
-        <p>Please provide details about your request, and our team will respond as soon as possible.</p>
-
-        <form asp-action="Create" asp-controller="SupportRequest" method="post">
-            <div class="validation-summary-errors" asp-validation-summary="All" style="display:none;"></div>
-
-            <div class="form-group">
-                <label for="requestType" class="form-label">Request Type*</label>
-                <select id="requestType" name="RequestType" class="form-control" required>
-                    <option value="">Select request type</option>
-                    <option value="General">General Inquiry</option>
-                    <option value="Legal">Legal Support</option>
-                    <option value="Financial">Financial Assistance</option>
-                    <option value="Emotional">Emotional Support</option>
-                    <option value="Other">Other</option>
-                </select>
-                <span class="field-validation-error" data-valmsg-for="RequestType" data-valmsg-replace="true"></span>
-            </div>
-
-            <div class="form-group">
-                <label for="subject" class="form-label">Subject*</label>
-                <input type="text" id="subject" name="Subject" class="form-control" placeholder="Brief description of your request" required>
-                <span class="field-validation-error" data-valmsg-for="Subject" data-valmsg-replace="true"></span>
-            </div>
-
-            <div class="form-group">
-                <label for="requestText" class="form-label">Request Details*</label>
-                <textarea id="requestText" name="RequestText" class="form-control textarea" placeholder="Please provide detailed information about your request" required></textarea>
-                <span class="field-validation-error" data-valmsg-for="RequestText" data-valmsg-replace="true"></span>
-            </div>
-
-            <button type="submit" class="submit-button">Submit Request</button>
-        </form>
+        <a asp-action="Create" class="btn btn-primary">
+            <i class="bi bi-plus-circle"></i> New Support Request
+        </a>
     </div>
 
-    <div class="support-list">
-        <h2>Your Support Requests</h2>
-
-        @if (Model != null && Model.Any())
-        {
-            @foreach (var request in Model)
+    <div class="card shadow-sm mb-4">
+        <div class="card-header bg-primary text-white">
+            <h5 class="mb-0">Your Support Requests</h5>
+        </div>
+        <div class="card-body">
+            @if (!Model.Any())
             {
-                <div class="support-card">
-                    <div class="support-header">
-                        <div class="support-title">
-                            <h3>@request.Subject</h3>
-                            <div class="support-meta">
-                                <span>Request ID: #@request.RequestId</span> |
-                                <span>Type: @request.RequestType</span> |
-                                <span>Submitted: @request.RequestDate.ToString("MMM dd, yyyy")</span>
-                            </div>
-                        </div>
-                        <div class="support-status status-@request.Status.ToLower()">
-                            @request.Status
-                        </div>
-                    </div>
-                    <div class="support-content">
-                        @(request.RequestText.Length > 150 ? request.RequestText.Substring(0, 150) + "..." : request.RequestText)
-                    </div>
-                    <div class="support-actions">
-                        <a href="/SupportRequest/Details/@request.RequestId" class="support-button view">View Details</a>
-                    </div>
+                <div class="alert alert-info">
+                    <i class="bi bi-info-circle"></i> You don't have any support requests yet. Click the "New Support Request" button to create one.
                 </div>
             }
-        }
-        else
-        {
-            <div class="empty-state">
-                <div class="empty-state-icon">
-                    <i class="bi bi-inbox"></i>
+            else
+            {
+                <div class="table-responsive">
+                    <table class="table table-striped table-hover">
+                        <thead>
+                            <tr>
+                                <th>Request Type</th>
+                                <th>Date</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model)
+                            {
+                                <tr>
+                                    <td>@item.RequestType</td>
+                                    <td>@item.RequestDate.ToShortDateString()</td>
+                                    <td>
+                                        @switch (item.Status)
+                                        {
+                                            case "Pending":
+                                                <span class="badge bg-warning">Pending</span>
+                                                break;
+                                            case "In Progress":
+                                                <span class="badge bg-info">In Progress</span>
+                                                break;
+                                            case "Resolved":
+                                                <span class="badge bg-success">Resolved</span>
+                                                break;
+                                            case "Closed":
+                                                <span class="badge bg-secondary">Closed</span>
+                                                break;
+                                            default:
+                                                <span class="badge bg-primary">@item.Status</span>
+                                                break;
+                                        }
+                                    </td>
+                                    <td>
+                                        <div class="btn-group" role="group">
+                                            <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-outline-primary">
+                                                <i class="bi bi-eye"></i> View
+                                            </a>
+                                            @if (User.IsInRole("Admin") || User.IsInRole("Volunteer"))
+                                            {
+                                                <a asp-action="Respond" asp-route-id="@item.Id" class="btn btn-sm btn-outline-secondary">
+                                                    <i class="bi bi-reply"></i> Respond
+                                                </a>
+                                            }
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
                 </div>
-                <h3>No Support Requests Yet</h3>
-                <p>You haven't submitted any support requests yet. Use the form above to submit your first request.</p>
-            </div>
-        }
+            }
+        </div>
     </div>
 </div>
 
 @section Scripts {
     <script>
-        // Add Bootstrap Icons if not already included in layout
-        if (!document.querySelector('link[href*="bootstrap-icons"]')) {
-            const iconLink = document.createElement('link');
-            iconLink.rel = 'stylesheet';
-            iconLink.href = 'https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css';
-            document.head.appendChild(iconLink);
-        }
+        $(document).ready(function() {
+            // Initialize DataTable if available
+            if ($.fn.DataTable) {
+                $('table').DataTable({
+                    responsive: true,
+                    order: [[1, 'desc']], // Sort by date by default
+                    language: {
+                        search: "Search requests:",
+                        lengthMenu: "Show _MENU_ requests per page",
+                        info: "Showing _START_ to _END_ of _TOTAL_ requests"
+                    }
+                });
+            }
+        });
     </script>
 }

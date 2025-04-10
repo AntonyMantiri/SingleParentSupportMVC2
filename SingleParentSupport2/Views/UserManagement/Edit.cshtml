@@ -1,0 +1,114 @@
+﻿@model SingleParentSupport2.Models.UserEditViewModel
+
+@{
+    ViewData["Title"] = "Edit User";
+}
+
+<div class="container mt-4">
+    <h1>Edit User</h1>
+
+    <div class="card shadow-sm mb-4">
+        <div class="card-header bg-primary text-white">
+            <h5 class="mb-0">Edit User Information</h5>
+        </div>
+        <div class="card-body">
+            <form asp-action="Edit" method="post">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <input type="hidden" asp-for="Id" />
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label asp-for="Email" class="form-label"></label>
+                            <input asp-for="Email" class="form-control" />
+                            <span asp-validation-for="Email" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="FirstName" class="form-label"></label>
+                            <input asp-for="FirstName" class="form-control" />
+                            <span asp-validation-for="FirstName" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="LastName" class="form-label"></label>
+                            <input asp-for="LastName" class="form-control" />
+                            <span asp-validation-for="LastName" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="mb-3 form-check">
+                            <input asp-for="IsVolunteer" class="form-check-input" />
+                            <label asp-for="IsVolunteer" class="form-check-label"></label>
+                        </div>
+
+                        <div class="mb-3 volunteer-fields" id="volunteerFields">
+                            <label asp-for="VolunteerRole" class="form-label"></label>
+                            <input asp-for="VolunteerRole" class="form-control" />
+                            <span asp-validation-for="VolunteerRole" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3 volunteer-fields" id="volunteerBioField">
+                            <label asp-for="VolunteerBio" class="form-label"></label>
+                            <textarea asp-for="VolunteerBio" class="form-control" rows="3"></textarea>
+                            <span asp-validation-for="VolunteerBio" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">User Roles</label>
+                    <div class="row">
+                        @foreach (var role in Model.AllRoles)
+                        {
+                            <div class="col-md-4">
+                                <div class="form-check">
+                                    <input type="checkbox"
+                                           name="SelectedRoles"
+                                           value="@role"
+                                           class="form-check-input"
+                                    @(Model.CurrentRoles.Contains(role) ? "checked" : "") />
+                                    <label class="form-check-label">@role</label>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
+
+                <div class="mt-4">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="bi bi-save"></i> Save Changes
+                    </button>
+                    <a asp-action="Index" class="btn btn-outline-secondary">
+                        <i class="bi bi-arrow-left"></i> Back to List
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        $(document).ready(function() {
+            // Toggle volunteer fields visibility based on IsVolunteer checkbox
+            function toggleVolunteerFields() {
+                if ($("#IsVolunteer").is(":checked")) {
+                    $(".volunteer-fields").show();
+                } else {
+                    $(".volunteer-fields").hide();
+                }
+            }
+
+            // Initial state
+            toggleVolunteerFields();
+
+            // On change
+            $("#IsVolunteer").change(function() {
+                toggleVolunteerFields();
+            });
+        });
+    </script>
+}

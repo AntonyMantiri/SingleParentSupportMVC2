@@ -1,0 +1,37 @@
+﻿@model SingleParentSupport2.Models.SupportRequest
+
+@{
+    ViewData["Title"] = "Request Confirmation";
+}
+
+<div class="container mt-4">
+    <div class="card shadow-sm mb-4">
+        <div class="card-header bg-success text-white">
+            <h5 class="mb-0"><i class="bi bi-check-circle"></i> Support Request Submitted</h5>
+        </div>
+        <div class="card-body text-center">
+            <div class="mb-4">
+                <i class="bi bi-check-circle-fill text-success" style="font-size: 4rem;"></i>
+            </div>
+            <h2>Thank You!</h2>
+            <p class="lead">Your support request has been successfully submitted.</p>
+
+            <div class="alert alert-info mt-4">
+                <p><strong>Request ID:</strong> #@Model.Id</p>
+                <p><strong>Request Type:</strong> @Model.RequestType</p>
+                <p><strong>Submitted:</strong> @Model.RequestDate.ToString("MMMM dd, yyyy h:mm tt")</p>
+            </div>
+
+            <p>Our team will review your request and respond as soon as possible. You can check the status of your request at any time from your support requests list.</p>
+
+            <div class="mt-4">
+                <a asp-action="Index" class="btn btn-primary">
+                    <i class="bi bi-list"></i> View All Requests
+                </a>
+                <a asp-action="Details" asp-route-id="@Model.Id" class="btn btn-outline-primary">
+                    <i class="bi bi-eye"></i> View This Request
+                </a>
+            </div>
+        </div>
+    </div>
+</div>

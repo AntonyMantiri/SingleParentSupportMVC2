@@ -1,0 +1,16 @@
+/* User Management Styles */
+.user-table th, .user-table td {
+    vertical-align: middle;
+}
+
+.role-badge {
+    margin-right: 5px;
+}
+
+.volunteer-fields {
+    display: none;
+}
+
+.toast-container {
+    z-index: 1050;
+}
