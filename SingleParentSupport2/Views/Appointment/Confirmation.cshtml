@@ -1,0 +1,26 @@
+﻿@{
+    ViewData["Title"] = "Appointment Confirmation";
+}
+
+<div class="container my-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow-lg">
+                <div class="card-header text-center bg-success text-white">
+                    <h4>Appointment Confirmed</h4>
+                </div>
+                <div class="card-body text-center">
+                    <p class="lead">Your appointment has been successfully scheduled.</p>
+                    <p><strong>Details:</strong></p>
+                    <ul class="list-unstyled">
+                        <li><strong>Date & Time:</strong> <span id="appointment-time">@TempData["AppointmentDate"] @TempData["AppointmentTime"]</span></li>
+                        @*                         <li><strong>Volunteer:</strong> <span id="volunteer-name">[Volunteer Name]</span></li>
+ *@                    </ul>
+                    <div class="mt-4">
+                        <a href="/Appointment" class="btn btn-primary">Go Back to Appointment page</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

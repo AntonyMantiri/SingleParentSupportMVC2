@@ -175,7 +175,7 @@
         color: #adb5bd;
     }
 
-    .calendar-day.today {
+    .calendar-day.selected {
         background-color: #e8f4ff;
         border-color: #5a67d8;
     }
@@ -356,6 +356,11 @@
 .status-scheduled {
     background-color: #cce5ff;
     color: #004085;
+}
+
+.status-rescheduled {
+    background-color: #fff3cd;
+    color: #856404;
 }
 
 .status-completed {
