@@ -53,9 +53,9 @@ namespace SingleParentSupport2.Models
         [Display(Name = "Volunteer Bio")]
         public string VolunteerBio { get; set; }
 
-        [Display(Name = "Roles")]
-        public List<string> SelectedRoles { get; set; }
+        [Display(Name = "Role")]
+        public string Role { get; set; }
 
-        public List<Microsoft.AspNetCore.Mvc.Rendering.SelectListItem> AllRoles { get; set; }
+        //public List<Microsoft.AspNetCore.Mvc.Rendering.SelectListItem> AllRoles { get; set; }
     }
 }

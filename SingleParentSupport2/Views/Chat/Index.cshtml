@@ -1,4 +1,6 @@
-﻿@{
+﻿@using System.Linq
+
+@{
     ViewData["Title"] = "Chat Support";
     Layout = "_Layout";
 }
@@ -24,7 +26,7 @@
                 <input type="text" class="search-input" placeholder="Search conversations...">
             </div>
             <div class="chat-rooms">
-                @if (Model != null && Model.ChatRooms != null && Model.ChatRooms.Any())
+                @if (Model != null && Model.ChatRooms != null)
                 {
                     @foreach (var room in Model.ChatRooms)
                     {
@@ -108,7 +110,7 @@
             </div>
 
             <div class="chat-messages" id="chat-messages">
-                @if (Model != null && Model.Messages != null && Model.Messages.Any())
+                @if (Model != null && Model.Messages != null)
                 {
                     @foreach (var message in Model.Messages)
                     {
@@ -252,55 +254,46 @@
                 e.preventDefault();
 
                 const messageText = messageInput.value.trim();
+                const receiverId = document.querySelector('.chat-room.active').getAttribute('data-room-id');
 
-                if (messageText) {
-                    // Create outgoing message
-                    const outgoingMessage = document.createElement('div');
-                    outgoingMessage.className = 'message outgoing';
-                    outgoingMessage.innerHTML = `
-                        <div class="message-avatar">
-                            <img src="https://via.placeholder.com/40" alt="You">
-                        </div>
-                        <div class="message-content">
-                            <div class="message-bubble">
-                                ${messageText}
-                            </div>
-                            <div class="message-time">Just now</div>
-                        </div>
-                    `;
-                    chatMessages.appendChild(outgoingMessage);
-
-                    // Clear input
-                    messageInput.value = '';
-
-                    // Scroll to bottom
-                    chatMessages.scrollTop = chatMessages.scrollHeight;
-
-                    // Simulate response after 1 second
-                    setTimeout(() => {
-                        const roomName = document.querySelector('.chat-room.active .room-name').textContent;
-                        const roomAvatar = document.querySelector('.chat-room.active .room-avatar img').src;
-
-                        const incomingMessage = document.createElement('div');
-                        incomingMessage.className = 'message incoming';
-                        incomingMessage.innerHTML = `
-                            <div class="message-avatar">
-                                <img src="${roomAvatar}" alt="${roomName}">
-                            </div>
-                            <div class="message-content">
-                                <div class="message-bubble">
-                                    Thank you for your message. A support agent will respond shortly.
+                if (messageText && receiverId) {
+                    // Send message to server
+                    fetch('/Chat/SendMessage', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]')?.value
+                        },
+                        body: JSON.stringify({
+                            ReceiverId: receiverId,
+                            Content: messageText
+                        })
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            // Append message to UI
+                            const outgoingMessage = document.createElement('div');
+                            outgoingMessage.className = 'message outgoing';
+                            outgoingMessage.innerHTML = `
+                                <div class="message-avatar">
+                                    <img src="https://via.placeholder.com/40" alt="You">
                                 </div>
-                                <div class="message-time">Just now</div>
-                            </div>
-                        `;
-                        chatMessages.appendChild(incomingMessage);
-
-                        // Scroll to bottom
-                        chatMessages.scrollTop = chatMessages.scrollHeight;
-                    }, 1000);
+                                <div class="message-content">
+                                    <div class="message-bubble">${messageText}</div>
+                                    <div class="message-time">Just now</div>
+                                </div>
+                            `;
+                            chatMessages.appendChild(outgoingMessage);
+                            messageInput.value = '';
+                            chatMessages.scrollTop = chatMessages.scrollHeight;
+                        } else {
+                            alert('Failed to send message.');
+                        }
+                    });
                 }
             });
+
 
             // Auto-resize textarea
             messageInput.addEventListener('input', function() {
