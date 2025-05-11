@@ -1,309 +1,376 @@
-﻿@{
-    ViewData["Title"] = "Schedule Appointment";
-    Layout = "_Layout";
+﻿@using System.Globalization
+
+@{
+	ViewData["Title"] = "Schedule Appointment";
+	Layout = "_Layout";
 }
 
 @section Styles {
-    <link rel="stylesheet" href="~/css/pages/appointment.css" />
+	<link rel="stylesheet" href="~/css/pages/appointment.css" />
 }
 
 <div class="page-header">
-    <div class="container">
-        <h1>Schedule an Appointment</h1>
-        <p>Book a session with one of our volunteers or counselors</p>
-    </div>
+	<div class="container">
+		<h1>Schedule an Appointment</h1>
+		<p>Book a session with one of our volunteers or counselors</p>
+	</div>
 </div>
 
 <div class="container appointment-container">
-    <div class="appointment-form">
-        <h2>Book Your Appointment</h2>
-        <p>Select a date, time, and volunteer to schedule your appointment.</p>
+	<div class="appointment-form">
+		<h2>Book Your Appointment</h2>
+		<p>Select a date, time, and volunteer to schedule your appointment.</p>
 
-        <form asp-action="Schedule" asp-controller="Appointment" method="post">
-            <div class="validation-summary-errors" asp-validation-summary="All" style="display:none;"></div>
+		<form asp-action="Schedule" asp-controller="Appointment" method="post">
+			<div class="validation-summary-errors" asp-validation-summary="All" style="display:none;"></div>
 
-            <div class="calendar-container">
-                <div class="calendar-header">
-                    @{
-                        int month = Context.Request.Query["month"].Count > 0 ? int.Parse(Context.Request.Query["month"]) : DateTime.Now.Month;
-                        int year = Context.Request.Query["year"].Count > 0 ? int.Parse(Context.Request.Query["year"]) : DateTime.Now.Year;
-                        DateTime currentDate = new DateTime(year, month, 1);
-                    }
-                    <div class="calendar-title">@currentDate.ToString("MMMM yyyy")</div>
-                    <div class="calendar-nav">
-                        @{
-                            var prev = currentDate.AddMonths(-1);
-                            var next = currentDate.AddMonths(1);
-                        }
-                        <div class="calendar-nav">
-                            <a class="calendar-nav-btn" asp-controller="Appointment" asp-action="Index"
-                               asp-route-month="@prev.Month" asp-route-year="@prev.Year" title="Previous Month">
-                                <i class="bi bi-chevron-left"></i>
-                            </a>
+			<div class="calendar-container">
+				<div class="calendar-header">
+					@{
+						int month = Context.Request.Query["month"].Count > 0 ? int.Parse(Context.Request.Query["month"]) : DateTime.Now.Month;
+						int year = Context.Request.Query["year"].Count > 0 ? int.Parse(Context.Request.Query["year"]) : DateTime.Now.Year;
+						DateTime currentDate = new DateTime(year, month, 1);
+					}
+					<div class="calendar-title">@currentDate.ToString("MMMM yyyy")</div>
+					<div class="calendar-nav">
+						@{
+							var prev = currentDate.AddMonths(-1);
+							var next = currentDate.AddMonths(1);
+						}
+						<div class="calendar-nav">
+							<a class="calendar-nav-btn" asp-controller="Appointment" asp-action="Index"
+							   asp-route-month="@prev.Month" asp-route-year="@prev.Year" title="Previous Month">
+								<i class="bi bi-chevron-left"></i>
+							</a>
 
-                            <a class="calendar-nav-btn" asp-controller="Appointment" asp-action="Index"
-                               asp-route-month="@next.Month" asp-route-year="@next.Year" title="Next Month">
-                                <i class="bi bi-chevron-right"></i>
-                            </a>
-                        </div>
-                    </div>
-                </div>
+							<a class="calendar-nav-btn" asp-controller="Appointment" asp-action="Index"
+							   asp-route-month="@next.Month" asp-route-year="@next.Year" title="Next Month">
+								<i class="bi bi-chevron-right"></i>
+							</a>
+						</div>
+					</div>
+				</div>
 
-                <div class="calendar-grid">
-                    <div class="calendar-day-header">Sun</div>
-                    <div class="calendar-day-header">Mon</div>
-                    <div class="calendar-day-header">Tue</div>
-                    <div class="calendar-day-header">Wed</div>
-                    <div class="calendar-day-header">Thu</div>
-                    <div class="calendar-day-header">Fri</div>
-                    <div class="calendar-day-header">Sat</div>
+				<div class="calendar-grid">
+					<div class="calendar-day-header">Sun</div>
+					<div class="calendar-day-header">Mon</div>
+					<div class="calendar-day-header">Tue</div>
+					<div class="calendar-day-header">Wed</div>
+					<div class="calendar-day-header">Thu</div>
+					<div class="calendar-day-header">Fri</div>
+					<div class="calendar-day-header">Sat</div>
 
-                    <!-- Calendar days would be dynamically generated -->
-                    @{
-                        // Start of the current month
-                        var firstOfMonth = new DateTime(year, month, 1);
-                        // Total days in current month
-                        var daysInMonth = DateTime.DaysInMonth(year, month);
-                        // Day of week the month starts on (0 = Sunday, 6 = Saturday)
-                        int startDayOfWeek = (int)firstOfMonth.DayOfWeek;
+					<!-- Calendar days would be dynamically generated -->
+					@{
+						// Start of the current month
+						var firstOfMonth = new DateTime(year, month, 1);
+						// Total days in current month
+						var daysInMonth = DateTime.DaysInMonth(year, month);
+						// Day of week the month starts on (0 = Sunday, 6 = Saturday)
+						int startDayOfWeek = (int)firstOfMonth.DayOfWeek;
 
-                        // Previous month info
-                        var prevMonthDate = firstOfMonth.AddMonths(-1);
-                        int daysInPrevMonth = DateTime.DaysInMonth(prevMonthDate.Year, prevMonthDate.Month);
+						// Previous month info
+						var prevMonthDate = firstOfMonth.AddMonths(-1);
+						int daysInPrevMonth = DateTime.DaysInMonth(prevMonthDate.Year, prevMonthDate.Month);
 
-                        // Total slots to fill = 42 (6 weeks x 7 days)
-                        int totalSlots = 42;
+						// Total slots to fill = 42 (6 weeks x 7 days)
+						int totalSlots = 42;
 
-                        for (int i = 0; i < totalSlots; i++)
-                        {
-                            DateTime cellDate;
-                            string cssClass = "calendar-day";
+						for (int i = 0; i < totalSlots; i++)
+						{
+							DateTime cellDate;
+							string cssClass = "calendar-day";
 
-                            if (i < startDayOfWeek)
-                            {
-                                // Fill from previous month
-                                int day = daysInPrevMonth - startDayOfWeek + i + 1;
-                                cellDate = new DateTime(prevMonthDate.Year, prevMonthDate.Month, day);
-                                cssClass += " other-month";
-                            }
-                            else if (i >= startDayOfWeek + daysInMonth)
-                            {
-                                // Fill from next month
-                                int day = i - (startDayOfWeek + daysInMonth) + 1;
-                                var nextMonthDate = firstOfMonth.AddMonths(1);
-                                cellDate = new DateTime(nextMonthDate.Year, nextMonthDate.Month, day);
-                                cssClass += " other-month";
-                            }
-                            else
-                            {
-                                // Current month
-                                int day = i - startDayOfWeek + 1;
-                                cellDate = new DateTime(year, month, day);
-                            }
+							if (i < startDayOfWeek)
+							{
+								// Fill from previous month
+								int day = daysInPrevMonth - startDayOfWeek + i + 1;
+								cellDate = new DateTime(prevMonthDate.Year, prevMonthDate.Month, day);
+								cssClass += " other-month";
+							}
+							else if (i >= startDayOfWeek + daysInMonth)
+							{
+								// Fill from next month
+								int day = i - (startDayOfWeek + daysInMonth) + 1;
+								var nextMonthDate = firstOfMonth.AddMonths(1);
+								cellDate = new DateTime(nextMonthDate.Year, nextMonthDate.Month, day);
+								cssClass += " other-month";
+							}
+							else
+							{
+								// Current month
+								int day = i - startDayOfWeek + 1;
+								cellDate = new DateTime(year, month, day);
+							}
 
-                            <div class="@cssClass">
-                                <div class="calendar-day-number" data-day="@cellDate.ToString("ddd")">
-                                    @cellDate.Day
-                                </div>
-                            </div>
-                        }
-                    }
-                </div>
-            </div>
+							<div class="@cssClass">
+								<div class="calendar-day-number" data-day="@cellDate.ToString("ddd")">
+									@cellDate.Day
+								</div>
+							</div>
+						}
+					}
+				</div>
+			</div>
 
-            <div class="form-group">
-                <label class="form-label">Selected Date</label>
-                <input type="date" id="selected-date" name="AppointmentDate" class="form-control" readonly required>
-            </div>
+			<div class="form-group">
+				<label class="form-label">Selected Date</label>
+				<input type="date" id="selected-date" name="AppointmentDate" class="form-control" readonly required>
+			</div>
 
-            <div class="form-group">
-                <label class="form-label">Available Time Slots</label>
-                <div class="time-slots">
-                    <div class="time-slot" data-time="09:00">9:00 AM</div>
-                    <div class="time-slot" data-time="10:00">10:00 AM</div>
-                    <div class="time-slot" data-time="11:00">11:00 AM</div>
-                    <div class="time-slot" data-time="12:00">12:00 PM</div>
-                    <div class="time-slot" data-time="13:00">1:00 PM</div>
-                    <div class="time-slot" data-time="14:00">2:00 PM</div>
-                    <div class="time-slot" data-time="15:00">3:00 PM</div>
-                    <div class="time-slot" data-time="16:00">4:00 PM</div>
-                    <div class="time-slot unavailable" data-time="17:00">5:00 PM</div>
-                </div>
-                <input type="hidden" id="selected-time" name="AppointmentTime" required>
-            </div>
+			<div class="form-group">
+				<label class="form-label">Select a Volunteer</label>
+				<div class="volunteer-list">
+					<div class="volunteer-card" data-volunteer-id="a6cef287-368e-4590-97d7-4ecd8ded38c0">
+						<div class="volunteer-avatar">
+							<img src="~/images/johndoe.jpeg" alt="John Doe">
+						</div>
+						<div class="volunteer-info">
+							<div class="volunteer-name">John Doe</div>
+							<div class="volunteer-role">Mental Health Counselor</div>
+							<div class="volunteer-bio">Specializes in family dynamics and emotional support for single parents.</div>
+						</div>
+					</div>
+					<div class="volunteer-card" data-volunteer-id="9c5e771c-0c84-4ff9-b6cc-b821b245eaa1">
+						<div class="volunteer-avatar">
+							<img src="~/images/sarahjohnson.jpeg" alt="Sarah Johnson">
+						</div>
+						<div class="volunteer-info">
+							<div class="volunteer-name">Sarah Johnson</div>
+							<div class="volunteer-role">Legal Advisor</div>
+							<div class="volunteer-bio">Provides guidance on custody issues and legal rights for single parents.</div>
+						</div>
+					</div>
+					<div class="volunteer-card" data-volunteer-id="227f1609-a235-4d1c-884a-aefb1fa542d0">
+						<div class="volunteer-avatar">
+							<img src="~/images/michaelbrown.jpeg" alt="Michael Brown">
+						</div>
+						<div class="volunteer-info">
+							<div class="volunteer-name">Michael Brown</div>
+							<div class="volunteer-role">Financial Advisor</div>
+							<div class="volunteer-bio">Helps with budgeting, financial planning, and accessing financial assistance.</div>
+						</div>
+					</div>
+				</div>
+				<input type="hidden" id="selected-volunteer" name="VolunteerId" required>
+			</div>
 
-            <div class="form-group">
-                <label class="form-label">Select a Volunteer</label>
-                <div class="volunteer-list">
-                    <div class="volunteer-card" data-volunteer-id="1">
-                        <div class="volunteer-avatar">
-                            <img src="~/images/johndoe.jpeg" alt="John Doe">
-                        </div>
-                        <div class="volunteer-info">
-                            <div class="volunteer-name">John Doe</div>
-                            <div class="volunteer-role">Mental Health Counselor</div>
-                            <div class="volunteer-bio">Specializes in family dynamics and emotional support for single parents.</div>
-                        </div>
-                    </div>
-                    <div class="volunteer-card" data-volunteer-id="2">
-                        <div class="volunteer-avatar">
-                            <img src="~/images/sarahjohnson.jpeg" alt="Sarah Johnson">
-                        </div>
-                        <div class="volunteer-info">
-                            <div class="volunteer-name">Sarah Johnson</div>
-                            <div class="volunteer-role">Legal Advisor</div>
-                            <div class="volunteer-bio">Provides guidance on custody issues and legal rights for single parents.</div>
-                        </div>
-                    </div>
-                    <div class="volunteer-card" data-volunteer-id="3">
-                        <div class="volunteer-avatar">
-                            <img src="~/images/michaelbrown.jpeg" alt="Michael Brown">
-                        </div>
-                        <div class="volunteer-info">
-                            <div class="volunteer-name">Michael Brown</div>
-                            <div class="volunteer-role">Financial Advisor</div>
-                            <div class="volunteer-bio">Helps with budgeting, financial planning, and accessing financial assistance.</div>
-                        </div>
-                    </div>
-                </div>
-                <input type="hidden" id="selected-volunteer" name="VolunteerId" required>
-            </div>
+			<div class="form-group">
+				<label class="form-label">Available Time Slots</label>
+				<div class="time-slots">
+					<!-- Time slots will be populated dynamically here -->
+				</div>
+				<input type="hidden" id="selected-time" name="AppointmentTime" required>
+			</div>
 
-            <div class="form-group">
-                <label for="purpose" class="form-label">Purpose of Appointment</label>
-                <textarea id="purpose" name="Purpose" class="form-control textarea" placeholder="Please briefly describe the reason for your appointment" required></textarea>
-            </div>
+			<div class="form-group">
+				<label for="purpose" class="form-label">Purpose of Appointment</label>
+				<textarea id="purpose" name="Purpose" class="form-control textarea" placeholder="Please briefly describe the reason for your appointment" required></textarea>
+			</div>
 
-            <button type="submit" class="submit-button">Schedule Appointment</button>
-        </form>
-    </div>
+			<button type="submit" class="submit-button">Schedule Appointment</button>
+		</form>
+	</div>
 
-    <div class="appointment-list">
-        <h2>Your Upcoming Appointments</h2>
+	<div class="appointment-list">
+		<h2>Your Upcoming Appointments</h2>
 
-        @if (Model != null && Model.Count > 0)
-        {
-            @foreach (var appointment in Model)
-            {
-                <div class="appointment-card">
-                    <div class="appointment-header">
-                        <div class="appointment-title">
-                            @*                             <h3>Appointment with @appointment.Volunteer.FirstName @appointment.Volunteer.LastName</h3>
- *@                            <div class="appointment-meta">
-                                <span>Appointment ID: #@appointment.Id</span>
-                            </div>
-                        </div>
-                        <div class="appointment-status status-@appointment.Status.ToLower()">
-                            @appointment.Status
-                        </div>
-                    </div>
-                    <div class="appointment-details">
-                        <div class="appointment-detail">
-                            <div class="appointment-detail-label">Date</div>
-                            <div class="appointment-detail-value">@appointment.AppointmentDate.ToString("MMMM dd, yyyy")</div>
-                        </div>
-                        <div class="appointment-detail">
-                            <div class="appointment-detail-label">Time</div>
-                            <div class="appointment-detail-value">@appointment.AppointmentDate.ToString("h:mm tt")</div>
-                        </div>
-                        <div class="appointment-detail">
-                            <div class="appointment-detail-label">Purpose</div>
-                            <div class="appointment-detail-value">@appointment.Purpose</div>
-                        </div>
-                    </div>
-                    <div class="appointment-actions">
-                        <a href="/Appointment/Reschedule/@appointment.Id" class="appointment-button reschedule">Reschedule</a>
-                        <a href="/Appointment/Cancel/@appointment.Id" class="appointment-button cancel">Cancel</a>
-                    </div>
-                </div>
-            }
-        }
-        else
-        {
-            <div class="empty-state">
-                <div class="empty-state-icon">
-                    <i class="bi bi-calendar"></i>
-                </div>
-                <h3>No Upcoming Appointments</h3>
-                <p>You don't have any scheduled appointments. Use the form above to schedule your first appointment with one of our volunteers.</p>
-            </div>
-        }
-    </div>
+		@if (Model != null && Model.Count > 0)
+		{
+			@foreach (var appointment in Model)
+			{
+				<div class="appointment-card">
+					<div class="appointment-header">
+						<div class="appointment-title">
+							@* 							<h3>Appointment with @appointment.Volunteer.FirstName @appointment.Volunteer.LastName</h3>
+ *@							<div class="appointment-meta">
+								<span>Appointment ID: #@appointment.Id</span>
+							</div>
+						</div>
+						<div class="appointment-status status-@appointment.Status.ToLower()">
+							@appointment.Status
+						</div>
+					</div>
+					<div class="appointment-details">
+						<div class="appointment-detail">
+							<div class="appointment-detail-label">Date</div>
+							<div class="appointment-detail-value">@appointment.AppointmentDate.ToString("MMMM dd, yyyy")</div>
+						</div>
+						<div class="appointment-detail">
+							<div class="appointment-detail-label">Time</div>
+							<div class="appointment-detail-value">@DateTime.ParseExact(appointment.AppointmentTime, "HH:mm", CultureInfo.InvariantCulture).ToString("hh:mm tt")</div>
+						</div>
+						<div class="appointment-detail">
+							<div class="appointment-detail-label">Purpose</div>
+							<div class="appointment-detail-value">@appointment.Purpose</div>
+						</div>
+					</div>
+					<div class="appointment-actions">
+						<a href="/Appointment/Reschedule/@appointment.Id" class="appointment-button reschedule">Reschedule</a>
+						<a href="/Appointment/Cancel/@appointment.Id" class="appointment-button cancel">Cancel</a>
+					</div>
+				</div>
+			}
+		}
+		else
+		{
+			<div class="empty-state">
+				<div class="empty-state-icon">
+					<i class="bi bi-calendar"></i>
+				</div>
+				<h3>No Upcoming Appointments</h3>
+				<p>You don't have any scheduled appointments. Use the form above to schedule your first appointment with one of our volunteers.</p>
+			</div>
+		}
+	</div>
 </div>
 
 @section Scripts {
-    <script>
-        // Add Bootstrap Icons if not already included in layout
-        if (!document.querySelector('link[href*="bootstrap-icons"]')) {
-            const iconLink = document.createElement('link');
-            iconLink.rel = 'stylesheet';
-            iconLink.href = 'https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css';
-            document.head.appendChild(iconLink);
-        }
+	<script>
+			// Add Bootstrap Icons if not already included in layout
+			if (!document.querySelector('link[href*="bootstrap-icons"]')) {
+				const iconLink = document.createElement('link');
+				iconLink.rel = 'stylesheet';
+				iconLink.href = 'https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css';
+				document.head.appendChild(iconLink);
+			}
 
-        document.addEventListener('DOMContentLoaded', function() {
-            // Calendar day selection
-            const calendarDays = document.querySelectorAll('.calendar-day:not(.other-month)');
-            const selectedDateInput = document.getElementById('selected-date');
+			document.addEventListener('DOMContentLoaded', function() {
+				// Calendar day selection
+				const calendarDays = document.querySelectorAll('.calendar-day:not(.other-month)');
+				const selectedDateInput = document.getElementById('selected-date');
 
-            calendarDays.forEach(day => {
-                day.addEventListener('click', function() {
-                    // Remove selected class from all days
-                    calendarDays.forEach(d => d.classList.remove('selected'));
+				calendarDays.forEach(day => {
+					day.addEventListener('click', function() {
+						// Remove selected class from all days
+						calendarDays.forEach(d => d.classList.remove('selected'));
 
-                    // Add selected class to clicked day
-                    this.classList.add('selected');
+						// Add selected class to clicked day
+						this.classList.add('selected');
 
-                    // Get the day number and month/year from calendar title
-                    const dayNumber = parseInt(this.querySelector('.calendar-day-number').textContent);
+						// Get the day number and month/year from calendar title
+						const dayNumber = parseInt(this.querySelector('.calendar-day-number').textContent);
 
-                    // Extract month and year from the calendar title (e.g., "March 2025")
-                    const [monthName, year] = document.querySelector('.calendar-title').textContent.split(' ');
-                    const monthIndex = new Date(`${monthName} 1, ${year}`).getMonth(); // 0-based
+						// Extract month and year from the calendar title (e.g., "March 2025")
+						const [monthName, year] = document.querySelector('.calendar-title').textContent.split(' ');
+						const monthIndex = new Date(`${monthName} 1, ${year}`).getMonth(); // 0-based
 
-                    // Create proper ISO date string (yyyy-MM-dd)
-                    const date = new Date(year, monthIndex, dayNumber);
-                    const localDate = new Date(date.getTime() - date.getTimezoneOffset() * 60000);
-                    const isoDate = localDate.toISOString().split('T')[0];
+						// Create proper ISO date string (yyyy-MM-dd)
+						const date = new Date(year, monthIndex, dayNumber);
+						const localDate = new Date(date.getTime() - date.getTimezoneOffset() * 60000);
+						const isoDate = localDate.toISOString().split('T')[0];
 
-                    // Set input value
-                    selectedDateInput.value = isoDate;
-                });
-            });
+						// Set input value
+						selectedDateInput.value = isoDate;
+					});
+				});
 
-            // Time slot selection
-            const timeSlots = document.querySelectorAll('.time-slot:not(.unavailable)');
-            const selectedTimeInput = document.getElementById('selected-time');
+				// Time slot selection
+				const timeSlots = document.querySelectorAll('.time-slot:not(.unavailable)');
+				const selectedTimeInput = document.getElementById('selected-time');
 
-            timeSlots.forEach(slot => {
-                slot.addEventListener('click', function() {
-                    // Remove selected class from all time slots
-                    timeSlots.forEach(s => s.classList.remove('selected'));
+				timeSlots.forEach(slot => {
+					slot.addEventListener('click', function() {
+						// Remove selected class from all time slots
+						timeSlots.forEach(s => s.classList.remove('selected'));
 
-                    // Add selected class to clicked time slot
-                    this.classList.add('selected');
+						// Add selected class to clicked time slot
+						this.classList.add('selected');
 
-                    // Update selected time input
-                    selectedTimeInput.value = this.getAttribute('data-time');
-                });
-            });
+						// Update selected time input
+						selectedTimeInput.value = this.getAttribute('data-time');
+					});
+				});
 
-            // Volunteer selection
-            const volunteerCards = document.querySelectorAll('.volunteer-card');
-            const selectedVolunteerInput = document.getElementById('selected-volunteer');
+				// Volunteer selection
+				const volunteerCards = document.querySelectorAll('.volunteer-card');
+				const selectedVolunteerInput = document.getElementById('selected-volunteer');
 
-            volunteerCards.forEach(card => {
-                card.addEventListener('click', function() {
-                    // Remove selected class from all volunteer cards
-                    volunteerCards.forEach(c => c.classList.remove('selected'));
+				volunteerCards.forEach(card => {
+					card.addEventListener('click', function() {
+						// Remove selected class from all volunteer cards
+						volunteerCards.forEach(c => c.classList.remove('selected'));
 
-                    // Add selected class to clicked volunteer card
-                    this.classList.add('selected');
+						// Add selected class to clicked volunteer card
+						this.classList.add('selected');
 
-                    // Update selected volunteer input
-                    selectedVolunteerInput.value = this.getAttribute('data-volunteer-id');
-                });
-            });
-        });
-    </script>
+						// Update selected volunteer input
+						selectedVolunteerInput.value = this.getAttribute('data-volunteer-id');
+					});
+				});
+			});
+
+
+			$(document).ready(function () {
+				// Ensure volunteer card click event is attached correctly
+				$('.volunteer-card').on('click', function () {
+					var volunteerId = $(this).data('volunteer-id');
+					$('#selected-volunteer').val(volunteerId);  // Set the VolunteerId in the hidden input
+					console.log('Selected Volunteer ID:', volunteerId);
+
+					// Trigger the AJAX call if both date and volunteer are selected
+					var date = $('#selected-date').val();
+					if (date && volunteerId) {
+						fetchAvailableTimes(volunteerId, date);
+					}
+				});
+
+				// Handle date selection
+				$('#selected-date').on('change', function () {
+					var volunteerId = $('#selected-volunteer').val(); // Get the volunteer ID
+					var date = $(this).val();
+					if (date && volunteerId) {
+						fetchAvailableTimes(volunteerId, date);
+					}
+				});
+
+				// Function to fetch available times based on volunteer and date
+				function fetchAvailableTimes(volunteerId, date) {
+					$.ajax({
+						url: '@Url.Action("GetAvailableTime", "Appointment")',
+						data: { volunteerId: volunteerId, date: date },
+						success: function (data) {
+							console.log(data)
+							// Clear existing time slots and add the available ones
+							$('.time-slots').empty();
+							data.forEach(function (timeSlotData) {
+								console.log(timeSlotData.time);
+								var timeSlot = $('<div>')
+									.addClass('time-slot')
+									.attr('data-time', timeSlotData.time)
+									.text(formatTime(timeSlotData.time))
+									.on('click', function () {
+										$('#selected-time').val(timeSlotData.time);
+										$('.time-slot').removeClass('selected');
+										$(this).addClass('selected');
+									});
+
+								// Check if the time slot is available and add 'unavailable' class if not
+								if (!timeSlotData.isAvailable) {
+									timeSlot.addClass('unavailable');
+								}
+
+								$('.time-slots').append(timeSlot);
+							});
+						},
+						error: function () {
+							alert("Error fetching available times.");
+						}
+					});
+				}
+
+
+				// Helper function to format time (e.g., "09:00" to "9:00 AM")
+				function formatTime(time) {
+					var hours = parseInt(time.split(':')[0]);
+					var minutes = time.split(':')[1];
+					var period = hours >= 12 ? 'PM' : 'AM';
+
+					if (hours > 12) hours -= 12;
+					if (hours === 0) hours = 12;
+
+					return hours + ':' + minutes + ' ' + period;
+				}
+		});
+	</script>
 }

@@ -45,7 +45,7 @@ namespace SingleParentSupport2.Controllers
                 var appointment = new Appointment
                 {
                     UserId = user.Id,
-                    //VolunteerId = model.VolunteerId.ToString(),
+                    VolunteerId = model.VolunteerId,
                     Purpose = model.Purpose,
                     AppointmentDate = model.AppointmentDate,
                     AppointmentTime = model.AppointmentTime,
@@ -54,6 +54,10 @@ namespace SingleParentSupport2.Controllers
 
                 TempData["AppointmentDate"] = model.AppointmentDate.ToString("dd-MM-yyyy");
                 TempData["AppointmentTime"] = model.AppointmentTime.ToString();
+                TempData["VolunteerName"] = await _userManager.Users
+                                                            .Where(u => u.Id == model.VolunteerId)
+                                                            .Select(u => u.FirstName + " " + u.LastName)
+                                                            .FirstOrDefaultAsync();
 
                 _context.Appointments.Add(appointment);
                 await _context.SaveChangesAsync();
@@ -91,8 +95,8 @@ namespace SingleParentSupport2.Controllers
             {
                 AppointmentId = appointment.Id,
                 AppointmentDate = appointment.AppointmentDate,
-                Purpose = appointment.Purpose
-                //VolunteerId = appointment.VolunteerId
+                Purpose = appointment.Purpose,
+                VolunteerId = appointment.VolunteerId
             };
 
             return View("Reschedule", model);
@@ -114,8 +118,9 @@ namespace SingleParentSupport2.Controllers
             }
 
             appointment.AppointmentDate = model.AppointmentDate;
+            appointment.AppointmentTime = model.AppointmentTime;
             appointment.Purpose = model.Purpose;
-            //appointment.VolunteerId = model.VolunteerId;
+            appointment.VolunteerId = model.VolunteerId;
             appointment.Status = "Rescheduled";
 
             await _context.SaveChangesAsync();
@@ -135,6 +140,31 @@ namespace SingleParentSupport2.Controllers
             await _context.SaveChangesAsync();
 
             return RedirectToAction("Index");
+        }
+
+        // Action to fetch available times for a selected volunteer
+        public IActionResult GetAvailableTime(string volunteerId, DateTime date)
+        {
+            var availableTimes = GetAvailableTimes(volunteerId, date);
+            return Json(availableTimes); // Return available times as JSON
+        }
+
+        private List<AvailableTime> GetAvailableTimes(string volunteerId, DateTime date)
+        {
+            List<AvailableTime> availableTimes = new List<AvailableTime>();
+
+            var startOfDay = date.Date.AddHours(9); // 9 AM
+            var endOfDay = date.Date.AddHours(21); // 9 PM
+
+            for (var time = startOfDay; time <= endOfDay; time = time.AddHours(1))
+            {
+                bool isBooked = _context.Appointments.Any(a => a.VolunteerId == volunteerId && a.AppointmentDate.Date == date.Date && a.AppointmentTime == time.ToString("HH:mm"));
+
+                // Format the time for display and use in the slot
+                availableTimes.Add(new AvailableTime { Time = time.ToString("HH:mm"), IsAvailable = !isBooked });
+            }
+
+            return availableTimes;
         }
     }
 }

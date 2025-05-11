@@ -29,7 +29,8 @@
                         <form asp-action="ExternalLogin" asp-controller="Account" method="post">
                             <input type="hidden" name="returnUrl" value="@ViewData["ReturnUrl"]" />
                             <button type="submit" name="provider" value="Google" class="btn btn-google">
-                                <i class="bi bi-google"></i> Google
+                                <img src="https://developers.google.com/identity/images/g-logo.png" alt="Google Logo" class="google-icon" />
+                                Sign in with Google
                             </button>
                         </form>
                     </div>

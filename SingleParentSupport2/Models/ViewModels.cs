@@ -20,7 +20,7 @@ namespace SingleParentSupport2.Models
         public int AppointmentId { get; set; }
         public DateTime AppointmentDate { get; set; }
         public string AppointmentTime { get; set; }
-        public int VolunteerId { get; set; }
+        public string VolunteerId { get; set; }
         public string Purpose { get; set; }
         public string Status { get; set; } = "Scheduled";
     }
