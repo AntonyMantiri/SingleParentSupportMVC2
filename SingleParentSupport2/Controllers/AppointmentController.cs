@@ -149,6 +149,25 @@ namespace SingleParentSupport2.Controllers
             return Json(availableTimes); // Return available times as JSON
         }
 
+        [HttpGet]
+        public async Task<IActionResult> GetAllAppointments()
+        {
+            var appointments = await _context.Appointments
+                .Include(a => a.User)
+                .Include(a => a.Volunteer)
+                .ToListAsync();
+
+            var result = appointments.Select(a => new {
+                Date = a.AppointmentDate.ToString("yyyy-MM-dd"),
+                Time = a.AppointmentTime,
+                User = a.User.FirstName + " " + a.User.LastName,
+                Volunteer = a.Volunteer.FirstName + " " + a.Volunteer.LastName,
+                a.Purpose
+            });
+
+            return Json(result);
+        }
+
         private List<AvailableTime> GetAvailableTimes(string volunteerId, DateTime date)
         {
             List<AvailableTime> availableTimes = new List<AvailableTime>();

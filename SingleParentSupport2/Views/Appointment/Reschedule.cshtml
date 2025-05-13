@@ -165,15 +165,6 @@
                         $('#selected-date').trigger('change');
                     });
             });
-
-            document.querySelectorAll(".time-slot").forEach(slot => {
-                slot.addEventListener("click", function () {
-                    if (this.classList.contains("unavailable")) return;
-                    document.querySelectorAll(".time-slot").forEach(s => s.classList.remove("selected"));
-                    this.classList.add("selected");
-                    timeInput.value = this.getAttribute("data-time");
-                });
-            });
         });
 
         $(document).ready(function () {
@@ -217,6 +208,14 @@
                     }
                 });
             }
+
+            // Delegated click handler for time slots
+            $('.time-slots').on('click', '.time-slot:not(.unavailable)', function () {
+                $('.time-slot').removeClass('selected');
+                $(this).addClass('selected');
+                $('#selected-time').val($(this).data('time'));
+            });
+
 
             // Helper to format time like "09:00" → "9:00 AM"
             function formatTime(time) {
