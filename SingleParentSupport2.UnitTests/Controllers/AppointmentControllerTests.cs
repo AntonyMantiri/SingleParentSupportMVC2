@@ -67,6 +67,104 @@ namespace SingleParentSupport2.UnitTests.Controllers
             Assert.Null(viewResult.Model); // Since return View() is called with no model
         }
 
+        [Fact]
+        public async Task Schedule_ValidModel_SavesAppointmentAndRedirects()
+        {
+            // Arrange
+            var testUser = new ApplicationUser { Id = "user123", FirstName = "John", LastName = "Doe" };
+            _mockUserManager
+                .Setup(um => um.GetUserAsync(It.IsAny<ClaimsPrincipal>()))
+                .ReturnsAsync(testUser);
+            _mockUserManager
+                .Setup(um => um.Users)
+                .Returns(new List<ApplicationUser> { new() { Id = "vol123", FirstName = "Jane", LastName = "Smith" } }
+                .AsQueryable());
+
+            _controller.TempData = new TempDataDictionary(
+                new DefaultHttpContext(),
+                Mock.Of<ITempDataProvider>());
+
+            var model = new AppointmentViewModel
+            {
+                VolunteerId = "vol123",
+                Purpose = "Counseling",
+                AppointmentDate = DateTime.Today.AddDays(1),
+                AppointmentTime = "10:00"
+            };
+
+            // Act
+            var result = await _controller.Schedule(model);
+
+            // Assert
+            var redirectResult = Assert.IsType<RedirectToActionResult>(result);
+            Assert.Equal("Confirmation", redirectResult.ActionName);
+            Assert.Single(_dbContext.Appointments);
+        }
+
+        [Fact]
+        public async Task Schedule_Post_InvalidModel_ReturnsIndexWithUpcomingAppointments()
+        {
+            // Arrange
+            _mockUserManager.Setup(m => m.GetUserId(It.IsAny<ClaimsPrincipal>())).Returns("user1");
+
+            _controller.ModelState.AddModelError("Purpose", "Required");
+
+            // Add a future appointment for user1
+            _dbContext.Appointments.Add(new Appointment
+            {
+                Id = 1,
+                UserId = "user1",
+                VolunteerId = "vol1",
+                AppointmentDate = DateTime.Today.AddDays(1),
+                AppointmentTime = "10:00",
+                Purpose = "Future Appointment",
+                Status = "Scheduled",
+                Volunteer = new ApplicationUser { Id = "vol1", FirstName = "Volunteer", LastName = "Test" }
+            });
+            _dbContext.SaveChanges();
+
+            var model = new AppointmentViewModel
+            {
+                AppointmentDate = DateTime.Today,
+                AppointmentTime = "10:00",
+                VolunteerId = "vol1"
+            };
+
+            // Act
+            var result = await _controller.Schedule(model);
+
+            // Assert
+            var viewResult = Assert.IsType<ViewResult>(result);
+            Assert.Equal("Index", viewResult.ViewName);
+
+            var returnedAppointments = Assert.IsAssignableFrom<List<Appointment>>(viewResult.Model);
+            Assert.Single(returnedAppointments);
+            Assert.Equal("Future Appointment", returnedAppointments[0].Purpose);
+        }
+
+        [Fact]
+        public async Task Reschedule_Post_InvalidModel_ReturnsViewWithModel()
+        {
+            // Arrange
+            _controller.ModelState.AddModelError("Purpose", "Required");
+
+            var model = new AppointmentViewModel
+            {
+                AppointmentId = 1,
+                AppointmentDate = DateTime.Today,
+                AppointmentTime = "10:00",
+                Purpose = "",
+                VolunteerId = "vol1"
+            };
+
+            // Act
+            var result = await _controller.Reschedule(model);
+
+            // Assert
+            var viewResult = Assert.IsType<ViewResult>(result);
+            Assert.Equal(model, viewResult.Model);
+        }
+
         private static AppDbContext GetInMemoryDbContext()
         {
             var options = new DbContextOptionsBuilder<AppDbContext>()
