@@ -165,6 +165,66 @@ namespace SingleParentSupport2.UnitTests.Controllers
             Assert.Equal(model, viewResult.Model);
         }
 
+        [Fact]
+        public async Task Reschedule_Post_AppointmentNotFound_ReturnsNotFound()
+        {
+            // Arrange
+            var model = new AppointmentViewModel
+            {
+                AppointmentId = 999, // Non-existent ID
+                AppointmentDate = DateTime.Today,
+                AppointmentTime = "10:00",
+                Purpose = "Update",
+                VolunteerId = "vol1"
+            };
+
+            // Act
+            var result = await _controller.Reschedule(model);
+
+            // Assert
+            Assert.IsType<NotFoundResult>(result);
+        }
+
+        [Fact]
+        public async Task Reschedule_Post_ValidModel_UpdatesAppointmentAndRedirects()
+        {
+            // Arrange
+            var appointment = new Appointment
+            {
+                Id = 1,
+                AppointmentDate = DateTime.Today,
+                AppointmentTime = "09:00",
+                Purpose = "Old Purpose",
+                VolunteerId = "vol1",
+                Status = "Scheduled"
+            };
+
+            _dbContext.Appointments.Add(appointment);
+            _dbContext.SaveChanges();
+
+            var model = new AppointmentViewModel
+            {
+                AppointmentId = 1,
+                AppointmentDate = DateTime.Today.AddDays(1),
+                AppointmentTime = "11:00",
+                Purpose = "New Purpose",
+                VolunteerId = "vol2"
+            };
+
+            // Act
+            var result = await _controller.Reschedule(model);
+
+            // Assert
+            var redirectResult = Assert.IsType<RedirectToActionResult>(result);
+            Assert.Equal("Index", redirectResult.ActionName);
+
+            var updated = _dbContext.Appointments.First(a => a.Id == 1);
+            Assert.Equal("11:00", updated.AppointmentTime);
+            Assert.Equal("New Purpose", updated.Purpose);
+            Assert.Equal("Rescheduled", updated.Status);
+            Assert.Equal("vol2", updated.VolunteerId);
+        }
+
         private static AppDbContext GetInMemoryDbContext()
         {
             var options = new DbContextOptionsBuilder<AppDbContext>()
