@@ -257,6 +257,87 @@ namespace SingleParentSupport2.UnitTests.Controllers
             Assert.IsType<NotFoundResult>(result);
         }
 
+        [Fact]
+        public void GetAvailableTime_ReturnsCorrectAvailability()
+        {
+            // Arrange
+            var volunteerId = "vol123";
+            var testDate = DateTime.Today;
+
+            // Book two slots: 09:00 and 11:00
+            _dbContext.Appointments.AddRange(
+                new Appointment
+                {
+                    VolunteerId = volunteerId,
+                    AppointmentDate = testDate,
+                    AppointmentTime = "09:00",
+                    Status = "Scheduled"
+                },
+                new Appointment
+                {
+                    VolunteerId = volunteerId,
+                    AppointmentDate = testDate,
+                    AppointmentTime = "11:00",
+                    Status = "Scheduled"
+                });
+
+            _dbContext.SaveChanges();
+
+            // Act
+            var result = _controller.GetAvailableTime(volunteerId, testDate) as JsonResult;
+            var availableTimes = result.Value as List<AvailableTime>;
+
+            // Assert
+            Assert.NotNull(availableTimes);
+            Assert.Equal(13, availableTimes.Count); // 9 AM to 9 PM
+            Assert.False(availableTimes.First(t => t.Time == "09:00").IsAvailable);
+            Assert.False(availableTimes.First(t => t.Time == "11:00").IsAvailable);
+            Assert.All(availableTimes.Where(t => t.Time != "09:00" && t.Time != "11:00"), t => Assert.True(t.IsAvailable));
+        }
+
+        [Fact]
+        public async Task GetAllAppointments_ReturnsAppointmentsJson()
+        {
+            // Arrange
+            var user = new ApplicationUser { Id = "user1", FirstName = "Alice", LastName = "Smith" };
+            var volunteer = new ApplicationUser { Id = "vol1", FirstName = "Bob", LastName = "Jones" };
+
+            _dbContext.Users.AddRange(user, volunteer);
+            _dbContext.Appointments.Add(new Appointment
+            {
+                UserId = user.Id,
+                VolunteerId = volunteer.Id,
+                User = user,
+                Volunteer = volunteer,
+                AppointmentDate = DateTime.Now.AddDays(1),
+                AppointmentTime = "10:00",
+                Purpose = "Parenting Help",
+                Status = "Scheduled"
+            });
+
+            _dbContext.SaveChanges();
+
+            // Act
+            var result = await _controller.GetAllAppointments() as JsonResult;
+
+            // Assert
+            Assert.NotNull(result);
+
+            // Serialize and deserialize to List<Dictionary<string, object>>
+            var jsonString = JsonSerializer.Serialize(result.Value);
+            var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
+            var appointments = JsonSerializer.Deserialize<List<Dictionary<string, object>>>(jsonString, options);
+
+            Assert.Single(appointments);
+
+            var appointment = appointments[0];
+
+            Assert.Equal("Alice Smith", appointment["User"].ToString());
+            Assert.Equal("Bob Jones", appointment["Volunteer"].ToString());
+            Assert.Equal("10:00", appointment["Time"].ToString());
+            Assert.Equal("Parenting Help", appointment["Purpose"].ToString());
+        }
+
         private static AppDbContext GetInMemoryDbContext()
         {
             var options = new DbContextOptionsBuilder<AppDbContext>()
