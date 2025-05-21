@@ -1,12 +1,113 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
+using Moq;
+using SingleParentSupport2.Controllers;
+using SingleParentSupport2.Models;
 
 namespace SingleParentSupport2.UnitTests.Controllers
 {
-    internal class ChatControllerTests
+    public class ChatControllerTests
     {
+        private readonly AppDbContext _dbContext;
+        private readonly Mock<UserManager<ApplicationUser>> _mockUserManager;
+        private readonly ChatController _controller;
+        private readonly ClaimsPrincipal _user;
+
+        public ChatControllerTests()
+        {
+            _dbContext = GetInMemoryDbContext();
+            _mockUserManager = GetMockUserManager();
+
+            var user = new ApplicationUser { Id = "user123", UserName = "testuser" };
+            _mockUserManager.Setup(um => um.GetUserId(It.IsAny<ClaimsPrincipal>())).Returns(user.Id);
+
+            _dbContext.Users.Add(user);
+            _dbContext.Users.Add(new ApplicationUser { Id = "partner1", FirstName = "Alice", LastName = "Smith", UserName = "alice" });
+            _dbContext.SaveChanges();
+
+            _user = new ClaimsPrincipal(new ClaimsIdentity(
+            [
+            new Claim(ClaimTypes.NameIdentifier, user.Id)
+            ]));
+
+            _controller = new ChatController(_dbContext, _mockUserManager.Object)
+            {
+                ControllerContext = new ControllerContext
+                {
+                    HttpContext = new DefaultHttpContext { User = _user }
+                }
+            };
+        }
+
+        [Fact]
+        public async Task Index_ReturnsChatPageViewModel()
+        {
+            // Arrange
+            _dbContext.ChatLogs.Add(new ChatLog
+            {
+                SenderId = "user123",
+                ReceiverId = "partner1",
+                Content = "Hi!",
+                Timestamp = DateTime.UtcNow
+            });
+            await _dbContext.SaveChangesAsync();
+
+            // Act
+            var result = await _controller.Index(null) as ViewResult;
+
+            // Assert
+            Assert.NotNull(result);
+            var model = result.Model as ChatPageViewModel;
+            Assert.NotNull(model);
+            Assert.NotEmpty(model.ChatRooms);
+            Assert.NotEmpty(model.Messages);
+        }
+
+        [Fact]
+        public async Task Index_NoMessages_ReturnsEmptyChatRooms()
+        {
+            // Act
+            var result = await _controller.Index(null) as ViewResult;
+
+            // Assert
+            var model = result.Model as ChatPageViewModel;
+            Assert.NotNull(model);
+            Assert.Empty(model.ChatRooms);
+            Assert.Empty(model.Messages);
+        }
+
+        private static AppDbContext GetInMemoryDbContext()
+        {
+            var options = new DbContextOptionsBuilder<AppDbContext>()
+                .UseInMemoryDatabase(Guid.NewGuid().ToString())
+                .Options;
+            return new AppDbContext(options);
+        }
+
+        private static Mock<UserManager<ApplicationUser>> GetMockUserManager()
+        {
+            var store = new Mock<IUserStore<ApplicationUser>>();
+            return new Mock<UserManager<ApplicationUser>>(
+                store.Object,
+                new Mock<IOptions<IdentityOptions>>().Object,
+                new Mock<IPasswordHasher<ApplicationUser>>().Object,
+                Array.Empty<IUserValidator<ApplicationUser>>(),
+                Array.Empty<IPasswordValidator<ApplicationUser>>(),
+                new Mock<ILookupNormalizer>().Object,
+                new Mock<IdentityErrorDescriber>().Object,
+                new Mock<IServiceProvider>().Object,
+                new Mock<ILogger<UserManager<ApplicationUser>>>().Object
+            );
+        }
     }
 }
