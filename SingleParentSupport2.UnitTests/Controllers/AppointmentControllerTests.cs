@@ -225,6 +225,38 @@ namespace SingleParentSupport2.UnitTests.Controllers
             Assert.Equal("vol2", updated.VolunteerId);
         }
 
+        [Fact]
+        public async Task Cancel_ExistingAppointment_ChangesStatusToCancelled()
+        {
+            // Arrange
+            var appointment = new Appointment
+            {
+                Id = 1,
+                Status = "Scheduled"
+            };
+
+            _dbContext.Appointments.Add(appointment);
+            _dbContext.SaveChanges();
+
+            // Act
+            var result = await _controller.Cancel(1);
+
+            // Assert
+            var redirectResult = Assert.IsType<RedirectToActionResult>(result);
+            Assert.Equal("Index", redirectResult.ActionName);
+            Assert.Equal("Cancelled", _dbContext.Appointments.Find(1).Status);
+        }
+
+        [Fact]
+        public async Task Cancel_NonExistingAppointment_ReturnsNotFound()
+        {
+            // Act
+            var result = await _controller.Cancel(999); // non-existent ID
+
+            // Assert
+            Assert.IsType<NotFoundResult>(result);
+        }
+
         private static AppDbContext GetInMemoryDbContext()
         {
             var options = new DbContextOptionsBuilder<AppDbContext>()
