@@ -182,6 +182,29 @@ namespace SingleParentSupport2.UnitTests.Controllers
             Assert.Equal("User not authenticated.", error["message"].ToString());
         }
 
+        [Fact]
+        public async Task GetMessages_ReturnsMessagesJson()
+        {
+            // Arrange
+            _dbContext.ChatLogs.Add(new ChatLog
+            {
+                SenderId = "partner1",
+                ReceiverId = "user123",
+                Content = "Hey!",
+                Timestamp = DateTime.UtcNow,
+                IsRead = false
+            });
+            await _dbContext.SaveChangesAsync();
+
+            // Act
+            var result = await _controller.GetMessages("partner1") as JsonResult;
+
+            // Assert
+            var messages = result.Value as IEnumerable<dynamic>;
+            Assert.NotNull(messages);
+            Assert.Single(messages);
+        }
+
         private static AppDbContext GetInMemoryDbContext()
         {
             var options = new DbContextOptionsBuilder<AppDbContext>()
