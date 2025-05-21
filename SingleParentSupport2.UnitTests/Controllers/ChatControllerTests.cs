@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
@@ -84,6 +85,47 @@ namespace SingleParentSupport2.UnitTests.Controllers
             Assert.NotNull(model);
             Assert.Empty(model.ChatRooms);
             Assert.Empty(model.Messages);
+        }
+
+        [Fact]
+        public async Task SendMessage_ValidModel_ReturnsSuccessJson()
+        {
+            // Arrange
+            var model = new ChatLog { ReceiverId = "partner1", Content = "Hello" };
+
+            // Act
+            var result = await _controller.SendMessage(model) as JsonResult;
+
+            // Assert
+            Assert.NotNull(result);
+
+            var jsonString = JsonSerializer.Serialize(result.Value);
+            var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
+            var message = JsonSerializer.Deserialize<Dictionary<string, object>>(jsonString, options);
+
+            Assert.Equal("True", message["success"].ToString());
+            Assert.Equal("", message["avatarUrl"].ToString());
+        }
+
+        [Fact]
+        public async Task SendMessage_InvalidModel_ReturnsError()
+        {
+            // Arrange
+            _controller.ModelState.AddModelError("Content", "Required");
+            var model = new ChatLog { ReceiverId = "partner1" };
+
+            // Act
+            var result = await _controller.SendMessage(model) as JsonResult;
+
+            // Assert
+            Assert.NotNull(result);
+
+            var jsonString = JsonSerializer.Serialize(result.Value);
+            var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
+            var message = JsonSerializer.Deserialize<Dictionary<string, object>>(jsonString, options);
+
+            Assert.Equal("False", message["success"].ToString());
+            Assert.Equal("Model invalid.", message["message"].ToString());
         }
 
         private static AppDbContext GetInMemoryDbContext()
