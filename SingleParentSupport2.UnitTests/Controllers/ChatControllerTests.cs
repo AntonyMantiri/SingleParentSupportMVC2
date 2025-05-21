@@ -128,6 +128,60 @@ namespace SingleParentSupport2.UnitTests.Controllers
             Assert.Equal("Model invalid.", message["message"].ToString());
         }
 
+        [Fact]
+        public async Task SendMessage_ExceptionThrown_ReturnsServerErrorJson()
+        {
+            // Arrange
+            var model = new ChatLog { ReceiverId = "partner1", Content = "Test message" };
+
+            // Make ModelState valid
+            _controller.ModelState.Clear();
+
+            // Set up GetUserId to throw exception
+            _mockUserManager.Setup(c => c.GetUserId(It.IsAny<ClaimsPrincipal>()))
+                        .Throws(new Exception("Fake exception"));
+
+            // Act
+            var result = await _controller.SendMessage(model) as JsonResult;
+
+            // Assert
+            Assert.NotNull(result);
+
+            var jsonString = JsonSerializer.Serialize(result.Value);
+            var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
+            var error = JsonSerializer.Deserialize<Dictionary<string, object>>(jsonString, options);
+
+            Assert.Equal("False", error["success"].ToString());
+            Assert.Equal("Server error: Fake exception", error["message"].ToString());
+        }
+
+        [Fact]
+        public async Task SendMessage_UserNotAuthenticated_ReturnsFailureJson()
+        {
+            // Arrange
+            _mockUserManager.Setup(um => um.GetUserId(It.IsAny<ClaimsPrincipal>()))
+                       .Returns<string>(null);
+
+            var model = new ChatLog
+            {
+                ReceiverId = "anyReceiverId",
+                Content = "Hello"
+            };
+
+            // Act
+            var result = await _controller.SendMessage(model) as JsonResult;
+
+            // Assert
+            Assert.NotNull(result);
+
+            var jsonString = JsonSerializer.Serialize(result.Value);
+            var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
+            var error = JsonSerializer.Deserialize<Dictionary<string, object>>(jsonString, options);
+
+            Assert.Equal("False", error["success"].ToString());
+            Assert.Equal("User not authenticated.", error["message"].ToString());
+        }
+
         private static AppDbContext GetInMemoryDbContext()
         {
             var options = new DbContextOptionsBuilder<AppDbContext>()
