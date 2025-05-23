@@ -3,177 +3,89 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using SingleParentSupport2.Models;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace SingleParentSupport2.Controllers
 {
     [Authorize]
     public class ChatController : Controller
     {
-        private readonly AppDbContext _context;
         private readonly UserManager<ApplicationUser> _userManager;
+        private readonly AppDbContext _context;
 
-        public ChatController(AppDbContext context, UserManager<ApplicationUser> userManager)
+        public ChatController(UserManager<ApplicationUser> userManager, AppDbContext context)
         {
-            _context = context;
             _userManager = userManager;
+            _context = context;
         }
 
-
-        public async Task<IActionResult> Index(string receiverId)
+        public async Task<IActionResult> Index()
         {
-            var userId = _userManager.GetUserId(User);
+            // Get current user
+            var currentUser = await _userManager.GetUserAsync(User);
 
-            // Get all chat partners
-            var chatPartners = await _context.ChatLogs
-            .Where(m => m.SenderId == userId || m.ReceiverId == userId)
-            .Select(m => new
+            // Get list of volunteers for regular users to chat with
+            // Or get list of users for volunteers to chat with
+            List<ApplicationUser> chatPartners;
+
+            if (User.IsInRole("Volunteer") || User.IsInRole("Admin"))
             {
-                Partner = m.SenderId == userId ? m.Receiver : m.Sender,
-                PartnerId = m.SenderId == userId ? m.ReceiverId : m.SenderId
-            })
-            .GroupBy(x => x.PartnerId)
-            .Select(g => g.First().Partner)
-            .ToListAsync();
-
-
-            // Fix: Retrieve the receiverId from the first chat partner's Id directly
-            if (string.IsNullOrEmpty(receiverId))
+                // Volunteers and admins see regular users
+                var userList = await _userManager.GetUsersInRoleAsync("User");
+                chatPartners = userList.ToList();
+            }
+            else
             {
-                receiverId = chatPartners.FirstOrDefault()?.Id;
+                // Regular users see volunteers
+                var volunteerList = await _userManager.GetUsersInRoleAsync("Volunteer");
+                chatPartners = volunteerList.ToList();
+
+                // Also add admins to the list
+                var admins = await _userManager.GetUsersInRoleAsync("Admin");
+                chatPartners.AddRange(admins);
             }
 
-            var chatRooms = chatPartners.Select(p => new ChatRoomViewModel
-            {
-                Id = p.Id,
-                Name = p.FirstName + " " + p.LastName,
-                AvatarUrl = GetAvatar(p.Id),
-                LastMessage = _context.ChatLogs
-                    .Where(m => (m.SenderId == userId && m.ReceiverId == p.Id) || (m.SenderId == p.Id && m.ReceiverId == userId))
-                    .OrderByDescending(m => m.Timestamp)
-                    .Select(m => m.Content)
-                    .FirstOrDefault(),
-                LastMessageTime = _context.ChatLogs
-                    .Where(m => (m.SenderId == userId && m.ReceiverId == p.Id) || (m.SenderId == p.Id && m.ReceiverId == userId))
-                    .OrderByDescending(m => m.Timestamp)
-                    .Select(m => m.Timestamp.ToShortTimeString())
-                    .FirstOrDefault(),
-                UnreadCount = _context.ChatLogs
-                    .Count(m => m.SenderId == p.Id && m.ReceiverId == userId && !m.IsRead)
-            }).ToList();
+            // Remove current user from the list if present
+            chatPartners = chatPartners.Where(u => u.Id != currentUser.Id).ToList();
 
-            // Get messages for selected room
-            var messages = await _context.ChatLogs
-                .Where(m => (m.SenderId == userId && m.ReceiverId == receiverId) || (m.SenderId == receiverId && m.ReceiverId == userId))
-                .OrderBy(m => m.Timestamp)
-                .Select(m => new ChatMessageViewModel
-                {
-                    MessageId = m.Id,
-                    SenderId = m.SenderId,
-                    ReceiverId = m.ReceiverId,
-                    SenderName = m.Sender.UserName,
-                    AvatarUrl = GetAvatar(m.SenderId),
-                    Content = m.Content,
-                    Timestamp = m.Timestamp,
-                    IsOutgoing = m.SenderId == userId
-                })
-                .ToListAsync();
-
-            var viewModel = new ChatPageViewModel
+            // Create a dictionary to map volunteer usernames to their profile photos
+            var volunteerPhotos = new Dictionary<string, string>
             {
-                ChatRooms = chatRooms,
-                Messages = messages,
-                ActiveRoomId = receiverId
+                { "johndoe", "/images/johndoe.jpeg" },
+                { "michaelbrown", "/images/michaelbrown.jpeg" },
+                { "sarahjohnson", "/images/sarahjohnson.jpeg" }
             };
 
-            return View(viewModel);
+            // Pass the data to the view
+            ViewBag.CurrentUser = currentUser;
+            ViewBag.ChatPartners = chatPartners;
+            ViewBag.VolunteerPhotos = volunteerPhotos;
+
+            return View();
         }
 
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> SendMessage([FromBody] ChatLog model)
+        // Helper method to get avatar URL for a user
+        private string GetAvatarUrl(ApplicationUser user)
         {
-            try
+            // Check if the user is a volunteer with a specific photo
+            if (user.UserName != null)
             {
-                if (ModelState.IsValid)
-                {
-                    var senderId = _userManager.GetUserId(User);
-                    if (string.IsNullOrEmpty(senderId))
-                        return Json(new { success = false, message = "User not authenticated." });
+                string normalizedUsername = user.UserName.ToLower().Replace(" ", "");
 
-                    var message = new ChatLog
-                    {
-                        SenderId = senderId,
-                        ReceiverId = model.ReceiverId,
-                        Content = model.Content,
-                        Timestamp = DateTime.UtcNow,
-                        IsRead = false
-                    };
-
-                    var avatarUrl = GetAvatar(senderId);
-
-                    _context.ChatLogs.Add(message);
-                    await _context.SaveChangesAsync();
-
-                    return Json(new { success = true, avatarUrl });
-                }
-                return Json(new { success = false, message = "Model invalid." });
-            }
-            catch (Exception ex)
-            {
-                var innerMessage = ex.InnerException?.Message ?? ex.Message;
-                return Json(new { success = false, message = "Server error: " + innerMessage });
-            }
-        }
-
-        [HttpGet]
-        public async Task<IActionResult> GetMessages(string receiverId)
-        {
-            var userId = _userManager.GetUserId(User);
-
-            // Mark all unread messages as read
-            var unreadMessages = await _context.ChatLogs
-                .Where(m => ((m.SenderId == userId && m.ReceiverId == receiverId) || (m.SenderId == receiverId && m.ReceiverId == userId)) && !m.IsRead)
-                .ToListAsync();
-
-            if (unreadMessages.Count > 0)
-            {
-                foreach (var msg in unreadMessages)
-                {
-                    msg.IsRead = true;
-                }
-
-                await _context.SaveChangesAsync();
+                // Check for specific volunteer photos
+                if (normalizedUsername == "johndoe")
+                    return "/images/johndoe.jpeg";
+                if (normalizedUsername == "michaelbrown")
+                    return "/images/michaelbrown.jpeg";
+                if (normalizedUsername == "sarahjohnson")
+                    return "/images/sarahjohnson.jpeg";
             }
 
-            var messages = await _context.ChatLogs
-                .Where(m => (m.SenderId == userId && m.ReceiverId == receiverId) || (m.SenderId == receiverId && m.ReceiverId == userId))
-                .OrderBy(m => m.Timestamp)
-                .Select(m => new
-                {
-                    messageId = m.Id,
-                    senderId = m.SenderId,
-                    receiverId = m.ReceiverId,
-                    senderName = m.Sender.UserName,
-                    avatarUrl = GetAvatar(m.SenderId),
-                    content = m.Content,
-                    timestamp = m.Timestamp.ToString("g"),
-                    isOutgoing = m.SenderId == userId
-                })
-                .ToListAsync();
-
-            return Json(messages);
-        }
-
-        private static string GetAvatar(string id)
-        {
-            return id switch
-            {
-                "9c5e771c-0c84-4ff9-b6cc-b821b245eaa1" => "/images/sarahjohnson.jpeg",
-                "a6cef287-368e-4590-97d7-4ecd8ded38c0" => "/images/johndoe.jpeg",
-                "227f1609-a235-4d1c-884a-aefb1fa542d0" => "/images/michaelbrown.jpeg",
-                "5e78e6f8-ad86-4a7e-86ec-883669ececb9" => "/images/brucewayne.jpeg",
-                _ => ""
-            };
+            // Default avatar for users without a specific photo
+            return "/images/default-avatar.png";
         }
     }
 }
