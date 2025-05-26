@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Claims;
-using System.Text;
-using System.Text.Json;
-using System.Threading.Tasks;
+﻿using System.Security.Claims;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -22,187 +16,159 @@ namespace SingleParentSupport2.UnitTests.Controllers
         private readonly AppDbContext _dbContext;
         private readonly Mock<UserManager<ApplicationUser>> _mockUserManager;
         private readonly ChatController _controller;
-        private readonly ClaimsPrincipal _user;
 
         public ChatControllerTests()
         {
             _dbContext = GetInMemoryDbContext();
             _mockUserManager = GetMockUserManager();
+            _controller = new ChatController(_mockUserManager.Object, _dbContext);
+        }
 
-            var user = new ApplicationUser { Id = "user123", UserName = "testuser" };
-            _mockUserManager.Setup(um => um.GetUserId(It.IsAny<ClaimsPrincipal>())).Returns(user.Id);
-
-            _dbContext.Users.Add(user);
-            _dbContext.Users.Add(new ApplicationUser { Id = "partner1", FirstName = "Alice", LastName = "Smith", UserName = "alice" });
-            _dbContext.SaveChanges();
-
-            _user = new ClaimsPrincipal(new ClaimsIdentity(
-            [
-            new Claim(ClaimTypes.NameIdentifier, user.Id)
-            ]));
-
-            _controller = new ChatController(_dbContext, _mockUserManager.Object)
+        [Fact]
+        public async Task Index_ForRegularUser_ShouldReturnVolunteersAndAdmins()
+        {
+            // Arrange
+            var currentUser = CreateUser("1", "regularUser");
+            var volunteers = new List<ApplicationUser>
             {
-                ControllerContext = new ControllerContext
+                CreateUser("2", "johndoe"),
+                CreateUser("3", "michaelbrown")
+            };
+
+            var admins = new List<ApplicationUser>
+            {
+                CreateUser("4", "sarahjohnson")
+            };
+
+            _mockUserManager.Setup(m => m.GetUserAsync(It.IsAny<ClaimsPrincipal>()))
+                .ReturnsAsync(currentUser);
+
+            _mockUserManager.Setup(m => m.GetUsersInRoleAsync("Volunteer"))
+                .ReturnsAsync(volunteers);
+
+            _mockUserManager.Setup(m => m.GetUsersInRoleAsync("Admin"))
+                .ReturnsAsync(admins);
+
+            _controller.ControllerContext = new ControllerContext
+            {
+                HttpContext = new DefaultHttpContext
                 {
-                    HttpContext = new DefaultHttpContext { User = _user }
+                    User = GetUserPrincipal("1", "User")
                 }
             };
+
+            // Act
+            var result = await _controller.Index() as ViewResult;
+
+            // Assert
+            Assert.NotNull(result);
+            Assert.Equal(currentUser, result.ViewData["CurrentUser"]);
+            var chatPartners = Assert.IsAssignableFrom<List<ApplicationUser>>(result.ViewData["ChatPartners"]);
+            Assert.Equal(3, chatPartners.Count);
+            Assert.DoesNotContain(chatPartners, u => u.Id == "1");
         }
 
         [Fact]
-        public async Task Index_ReturnsChatPageViewModel()
+        public async Task Index_ForVolunteer_ShouldReturnUsers()
         {
             // Arrange
-            _dbContext.ChatLogs.Add(new ChatLog
+            var currentUser = CreateUser("10", "volunteerUser");
+            var users = new List<ApplicationUser>
             {
-                SenderId = "user123",
-                ReceiverId = "partner1",
-                Content = "Hi!",
-                Timestamp = DateTime.UtcNow
-            });
-            await _dbContext.SaveChangesAsync();
+                CreateUser("11", "user1"),
+                CreateUser("12", "user2")
+            };
 
-            // Act
-            var result = await _controller.Index(null) as ViewResult;
+            _mockUserManager.Setup(m => m.GetUserAsync(It.IsAny<ClaimsPrincipal>()))
+                .ReturnsAsync(currentUser);
 
-            // Assert
-            Assert.NotNull(result);
-            var model = result.Model as ChatPageViewModel;
-            Assert.NotNull(model);
-            Assert.NotEmpty(model.ChatRooms);
-            Assert.NotEmpty(model.Messages);
-        }
+            _mockUserManager.Setup(m => m.GetUsersInRoleAsync("User"))
+                .ReturnsAsync(users);
 
-        [Fact]
-        public async Task Index_NoMessages_ReturnsEmptyChatRooms()
-        {
-            // Act
-            var result = await _controller.Index(null) as ViewResult;
-
-            // Assert
-            var model = result.Model as ChatPageViewModel;
-            Assert.NotNull(model);
-            Assert.Empty(model.ChatRooms);
-            Assert.Empty(model.Messages);
-        }
-
-        [Fact]
-        public async Task SendMessage_ValidModel_ReturnsSuccessJson()
-        {
-            // Arrange
-            var model = new ChatLog { ReceiverId = "partner1", Content = "Hello" };
-
-            // Act
-            var result = await _controller.SendMessage(model) as JsonResult;
-
-            // Assert
-            Assert.NotNull(result);
-
-            var jsonString = JsonSerializer.Serialize(result.Value);
-            var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
-            var message = JsonSerializer.Deserialize<Dictionary<string, object>>(jsonString, options);
-
-            Assert.Equal("True", message["success"].ToString());
-            Assert.Equal("", message["avatarUrl"].ToString());
-        }
-
-        [Fact]
-        public async Task SendMessage_InvalidModel_ReturnsError()
-        {
-            // Arrange
-            _controller.ModelState.AddModelError("Content", "Required");
-            var model = new ChatLog { ReceiverId = "partner1" };
-
-            // Act
-            var result = await _controller.SendMessage(model) as JsonResult;
-
-            // Assert
-            Assert.NotNull(result);
-
-            var jsonString = JsonSerializer.Serialize(result.Value);
-            var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
-            var message = JsonSerializer.Deserialize<Dictionary<string, object>>(jsonString, options);
-
-            Assert.Equal("False", message["success"].ToString());
-            Assert.Equal("Model invalid.", message["message"].ToString());
-        }
-
-        [Fact]
-        public async Task SendMessage_ExceptionThrown_ReturnsServerErrorJson()
-        {
-            // Arrange
-            var model = new ChatLog { ReceiverId = "partner1", Content = "Test message" };
-
-            // Make ModelState valid
-            _controller.ModelState.Clear();
-
-            // Set up GetUserId to throw exception
-            _mockUserManager.Setup(c => c.GetUserId(It.IsAny<ClaimsPrincipal>()))
-                        .Throws(new Exception("Fake exception"));
-
-            // Act
-            var result = await _controller.SendMessage(model) as JsonResult;
-
-            // Assert
-            Assert.NotNull(result);
-
-            var jsonString = JsonSerializer.Serialize(result.Value);
-            var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
-            var error = JsonSerializer.Deserialize<Dictionary<string, object>>(jsonString, options);
-
-            Assert.Equal("False", error["success"].ToString());
-            Assert.Equal("Server error: Fake exception", error["message"].ToString());
-        }
-
-        [Fact]
-        public async Task SendMessage_UserNotAuthenticated_ReturnsFailureJson()
-        {
-            // Arrange
-            _mockUserManager.Setup(um => um.GetUserId(It.IsAny<ClaimsPrincipal>()))
-                       .Returns<string>(null);
-
-            var model = new ChatLog
+            _controller.ControllerContext = new ControllerContext
             {
-                ReceiverId = "anyReceiverId",
-                Content = "Hello"
+                HttpContext = new DefaultHttpContext
+                {
+                    User = GetUserPrincipal("10", "Volunteer")
+                }
             };
 
             // Act
-            var result = await _controller.SendMessage(model) as JsonResult;
+            var result = await _controller.Index() as ViewResult;
 
             // Assert
             Assert.NotNull(result);
-
-            var jsonString = JsonSerializer.Serialize(result.Value);
-            var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
-            var error = JsonSerializer.Deserialize<Dictionary<string, object>>(jsonString, options);
-
-            Assert.Equal("False", error["success"].ToString());
-            Assert.Equal("User not authenticated.", error["message"].ToString());
+            var chatPartners = Assert.IsAssignableFrom<List<ApplicationUser>>(result.ViewData["ChatPartners"]);
+            Assert.Equal(2, chatPartners.Count);
         }
 
         [Fact]
-        public async Task GetMessages_ReturnsMessagesJson()
+        public async Task Index_RemovesCurrentUserFromChatPartners()
         {
             // Arrange
-            _dbContext.ChatLogs.Add(new ChatLog
+            var currentUser = CreateUser("5", "adminUser");
+            var users = new List<ApplicationUser>
             {
-                SenderId = "partner1",
-                ReceiverId = "user123",
-                Content = "Hey!",
-                Timestamp = DateTime.UtcNow,
-                IsRead = false
-            });
-            await _dbContext.SaveChangesAsync();
+                CreateUser("5", "adminUser"),
+                CreateUser("6", "user6")
+            };
+
+            _mockUserManager.Setup(m => m.GetUserAsync(It.IsAny<ClaimsPrincipal>()))
+                .ReturnsAsync(currentUser);
+
+            _mockUserManager.Setup(m => m.GetUsersInRoleAsync("User"))
+                .ReturnsAsync(users);
+
+            _controller.ControllerContext = new ControllerContext
+            {
+                HttpContext = new DefaultHttpContext
+                {
+                    User = GetUserPrincipal("5", "Admin")
+                }
+            };
 
             // Act
-            var result = await _controller.GetMessages("partner1") as JsonResult;
+            var result = await _controller.Index() as ViewResult;
 
             // Assert
-            var messages = result.Value as IEnumerable<dynamic>;
-            Assert.NotNull(messages);
-            Assert.Single(messages);
+            var chatPartners = Assert.IsAssignableFrom<List<ApplicationUser>>(result.ViewData["ChatPartners"]);
+            Assert.Single(chatPartners);
+            Assert.DoesNotContain(chatPartners, u => u.Id == "5");
+        }
+
+        [Fact]
+        public async Task Index_SetsVolunteerPhotosCorrectly()
+        {
+            // Arrange
+            var currentUser = CreateUser("9", "testUser");
+            var volunteers = new List<ApplicationUser>();
+
+            var admins = new List<ApplicationUser>();
+
+            _mockUserManager.Setup(m => m.GetUserAsync(It.IsAny<ClaimsPrincipal>()))
+                .ReturnsAsync(currentUser);
+
+            _mockUserManager.Setup(m => m.GetUsersInRoleAsync("Volunteer"))
+                .ReturnsAsync(volunteers);
+
+            _mockUserManager.Setup(m => m.GetUsersInRoleAsync("Admin"))
+                .ReturnsAsync(admins);
+
+            _controller.ControllerContext = new ControllerContext
+            {
+                HttpContext = new DefaultHttpContext
+                {
+                    User = GetUserPrincipal("9", "User")
+                }
+            };
+
+            // Act
+            var result = await _controller.Index() as ViewResult;
+
+            // Assert
+            var volunteerPhotos = Assert.IsType<Dictionary<string, string>>(result.ViewData["VolunteerPhotos"]);
+            Assert.True(volunteerPhotos.ContainsKey("johndoe"));
+            Assert.Equal("/images/johndoe.jpeg", volunteerPhotos["johndoe"]);
         }
 
         private static AppDbContext GetInMemoryDbContext()
@@ -227,6 +193,24 @@ namespace SingleParentSupport2.UnitTests.Controllers
                 new Mock<IServiceProvider>().Object,
                 new Mock<ILogger<UserManager<ApplicationUser>>>().Object
             );
+        }
+
+        private static ApplicationUser CreateUser(string id, string username)
+        {
+            return new ApplicationUser
+            {
+                Id = id,
+                UserName = username
+            };
+        }
+
+        private static ClaimsPrincipal GetUserPrincipal(string userId, string role)
+        {
+            return new ClaimsPrincipal(new ClaimsIdentity(new[]
+            {
+            new Claim(ClaimTypes.NameIdentifier, userId),
+            new Claim(ClaimTypes.Role, role)
+            }, "mock"));
         }
     }
 }
