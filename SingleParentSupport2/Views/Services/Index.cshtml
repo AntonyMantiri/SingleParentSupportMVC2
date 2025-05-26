@@ -5,6 +5,150 @@
 
 @section Styles {
     <link rel="stylesheet" href="~/css/pages/services.css" />
+    <style>
+        /* Resource Library Styles */
+        .resource-library-container {
+            padding: 30px 0;
+        }
+
+        /* Category filter styles */
+        .resource-categories {
+            margin-bottom: 30px;
+        }
+
+        .category-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .category-btn {
+            padding: 8px 16px;
+            background-color: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+            .category-btn:hover {
+                background-color: #e9ecef;
+            }
+
+            .category-btn.active {
+                background-color: #007bff;
+                color: white;
+                border-color: #007bff;
+            }
+
+        /* Resource cards styles */
+        .resource-cards-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .resource-card {
+            border: 1px solid #dee2e6;
+            border-radius: 5px;
+            overflow: hidden;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+            .resource-card:hover {
+                transform: translateY(-5px);
+                box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+            }
+
+        .resource-image {
+            height: 180px;
+            overflow: hidden;
+        }
+
+            .resource-image img {
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+            }
+
+        .resource-content {
+            padding: 15px;
+        }
+
+            .resource-content h4 {
+                margin-top: 0;
+                margin-bottom: 10px;
+                font-size: 18px;
+            }
+
+        .category-tag {
+            display: inline-block;
+            background-color: #e9ecef;
+            color: #495057;
+            padding: 3px 8px;
+            border-radius: 3px;
+            font-size: 12px;
+            margin-bottom: 10px;
+        }
+
+        .resource-description {
+            font-size: 14px;
+            color: #6c757d;
+            margin-bottom: 15px;
+        }
+
+        /* Button styles */
+        .browse-all-container,
+        .back-to-featured-container {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .cta-button {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+        }
+
+            .cta-button:hover {
+                background-color: #0069d9;
+            }
+
+        .secondary-button {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #6c757d;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+        }
+
+            .secondary-button:hover {
+                background-color: #5a6268;
+            }
+
+        /* Responsive adjustments */
+        @@media (max-width: 768px) {
+            .resource-cards-container {
+                grid-template-columns: 1fr;
+            }
+
+            .category-buttons {
+                flex-direction: column;
+            }
+        }
+    </style>
 }
 
 <div class="page-header">
@@ -22,8 +166,8 @@
     <div class="service-tabs">
         <div class="service-tab active" data-target="chat-support">Online Chat Support</div>
         <div class="service-tab" data-target="mental-wellbeing">Mental Wellbeing</div>
-        <div class="service-tab" data-target="spiritual-support">Spiritual Support</div>
-        <div class="service-tab" data-target="physical-wellbeing">Physical Wellbeing</div>
+        <div class="service-tab" data-target="financial-support">Financial Support</div>
+        <div class="service-tab" data-target="legal-support">Legal Support</div>
         <div class="service-tab" data-target="volunteer-services">Volunteer Services</div>
         <div class="service-tab" data-target="resource-library">Resource Library</div>
     </div>
@@ -95,7 +239,7 @@
 
         <div class="cta-buttons">
             <a href="/Chat" class="cta-button">Start Chatting Now</a>
-            <a href="/Appointment/Schedule" class="cta-button secondary">Schedule a Session</a>
+            <a href="/Appointment" class="cta-button secondary">Schedule a Session</a>
         </div>
 
         <div class="testimonial">
@@ -124,102 +268,484 @@
             <div class="resource-list">
                 <div class="resource-item">
                     <h4>Guide to Effective Communication</h4>
-                    <p>Learn communication strategies for difficult conversations.</p>
+                    <p>Effective communication is essential for navigating challenging conversations and building healthy relationships. The HSE's "Communicating Clearly" guidelines recommend using simple language, active listening, and showing empathy. When discussing difficult topics, try to remain calm, use "I" statements to express feelings, and focus on specific issues rather than generalizing. For parents dealing with co-parenting challenges, Citizens Information provides guidance on mediation services available throughout Ireland.</p>
+                    <p class="resource-source">Sources: <a href="https://www.hse.ie/eng/about/who/communications/communicatingclearly/" target="_blank">HSE Communicating Clearly</a>, <a href="https://www.citizensinformation.ie" target="_blank">Citizens Information</a></p>
                     <a href="/Resource/Details/5" class="btn btn-outline-primary">Read More</a>
                 </div>
                 <div class="resource-item">
                     <h4>Coping with Emotional Challenges</h4>
-                    <p>Strategies for managing stress, grief, and other emotions.</p>
+                    <p>Single parents often face unique emotional challenges including stress, isolation, and anxiety. The HSE recommends several coping strategies: establishing daily routines, practicing self-care, and seeking support when needed. If you're feeling isolated, Parentline.ie offers a confidential helpline (1800 927 277) specifically for parents. For ongoing emotional support, the HSE's free text service (text HELLO to 50808) connects you with trained volunteers. Remember that looking after your own wellbeing is crucial for your ability to care for your children.</p>
+                    <p class="resource-source">Sources: <a href="https://www2.hse.ie/mental-health/life-situations-events/loneliness/coping-with/" target="_blank">HSE Coping with Loneliness</a>, <a href="https://www.parentline.ie" target="_blank">Parentline.ie</a></p>
                     <a href="/Resource/Details/3" class="btn btn-outline-primary">Read More</a>
                 </div>
                 <div class="resource-item">
                     <h4>Building Your Support Network</h4>
-                    <p>Tips for creating a strong support system as a single parent.</p>
+                    <p>Creating a strong support network is vital for single parents in Ireland. One Family Ireland offers peer support groups specifically for single parents across the country. Local Family Resource Centres provide community-based support, including parenting courses and childcare assistance. The Kilkenny One Parent Community demonstrates how local support groups can provide practical help with childcare sharing, school runs, and emotional support. Consider reaching out to these organizations, joining online communities, and connecting with other parents in your area through school or community events.</p>
+                    <p class="resource-source">Sources: <a href="https://onefamily.ie" target="_blank">One Family Ireland</a>, <a href="https://hilocalgov.ie/case-studies/kilkenny-one-parent-community/" target="_blank">Kilkenny One Parent Community</a></p>
                     <a href="/Resource/Details/6" class="btn btn-outline-primary">Read More</a>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Other service sections would be similar but hidden by default -->
+    <!-- Mental Wellbeing Section -->
     <div class="service-section" id="mental-wellbeing" style="display: none;">
-        <!-- Mental Wellbeing content -->
-    </div>
-
-    <div class="service-section" id="spiritual-support" style="display: none;">
-        <!-- Spiritual Support content -->
-    </div>
-
-    <div class="service-section" id="physical-wellbeing" style="display: none;">
-        <!-- Physical Wellbeing content -->
-    </div>
-
-    <div class="service-section" id="volunteer-services" style="display: none;">
-        <!-- Volunteer Services content -->
-    </div>
-
-    <div class="service-section" id="resource-library" style="display: none;">
-        <!-- Resource Library content -->
-    </div>
-</div>
-
-<div class="cta-section">
-    <div class="container">
-        <h2>Need Personalized Support?</h2>
-        <p>Our team is ready to help you find the right services for your specific situation.</p>
+        <div class="service-header">
+            <div class="service-icon">
+                <i class="bi bi-heart-pulse"></i>
+            </div>
+            <div class="service-title">
+                <h2>Mental Wellbeing</h2>
+                <p>Support for emotional health and resilience</p>
+            </div>
+        </div>
+        <div class="service-description">
+            <p>Access counseling, stress management resources, and peer support groups to help you navigate the emotional challenges of single parenting.</p>
+        </div>
+        <div class="service-features">
+            <div class="row">
+                <div class="col-md-6 mb-4">
+                    <div class="feature-item">
+                        <div class="feature-icon"><i class="bi bi-emoji-smile"></i></div>
+                        <div class="feature-content">
+                            <h3>Counseling Services</h3>
+                            <p>Book sessions with our Mental Health Counselor, John Doe.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 mb-4">
+                    <div class="feature-item">
+                        <div class="feature-icon"><i class="bi bi-people"></i></div>
+                        <div class="feature-content">
+                            <h3>Peer Support Groups</h3>
+                            <p>Join group sessions to share experiences and coping strategies.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
         <div class="cta-buttons">
-            <a href="/Contact" class="cta-button white">Contact Us</a>
-            <a href="/Appointment/Schedule" class="cta-button white">Schedule a Consultation</a>
+            <a href="/Appointment" class="cta-button">Book Counselling</a>
+            <a href="/Chat" class="cta-button secondary">Join a Group</a>
+        </div>
+        <div class="faq-section">
+            <h3>Frequently Asked Questions</h3>
+            <div class="faq-item">
+                <div class="faq-question">Are sessions confidential?</div>
+                <div class="faq-answer">Yes, all counseling sessions are private and confidential.</div>
+            </div>
+            <div class="faq-item">
+                <div class="faq-question">How do I join a support group?</div>
+                <div class="faq-answer">Visit the group page and request to join. A facilitator will contact you.</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Financial Support Section -->
+    <div class="service-section" id="financial-support" style="display: none;">
+        <div class="service-header">
+            <div class="service-icon">
+                <i class="bi bi-cash-coin"></i>
+            </div>
+            <div class="service-title">
+                <h2>Financial Support</h2>
+                <p>Guidance and resources for financial stability</p>
+            </div>
+        </div>
+        <div class="service-description">
+            <p>Access financial planning resources, budgeting tools, and expert advice to help you achieve financial stability as a single parent.</p>
+        </div>
+        <div class="service-features">
+            <div class="row">
+                <div class="col-md-6 mb-4">
+                    <div class="feature-item">
+                        <div class="feature-icon"><i class="bi bi-calculator"></i></div>
+                        <div class="feature-content">
+                            <h3>Financial Planning</h3>
+                            <p>Get personalized advice on budgeting, saving, and planning for the future.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 mb-4">
+                    <div class="feature-item">
+                        <div class="feature-icon"><i class="bi bi-bank"></i></div>
+                        <div class="feature-content">
+                            <h3>Resource Assistance</h3>
+                            <p>As a single parent in Ireland, you may be eligible for several financial supports. The One-Parent Family Payment provides income support until your youngest child turns 7, after which you may qualify for Jobseeker's Transitional Payment until they reach 14. Working Family Payment offers additional support for low-income working parents. The National Childcare Scheme provides subsidies to reduce childcare costs, with higher rates for single-parent families. For housing support, the Housing Assistance Payment (HAP) can help with rent costs. Money Advice and Budgeting Service (MABS) offers free, confidential advice on managing your finances and dealing with debt.</p>
+                            <p class="resource-source">Sources: <a href="https://www.gov.ie/en/service/d0b018-one-parent-family-payment/" target="_blank">One-Parent Family Payment</a>, <a href="https://www.citizensinformation.ie/en/social_welfare/social_welfare_payments/social_welfare_payments_to_families_and_children/one_parent_family_payment.html" target="_blank">Citizens Information</a>, <a href="https://www.mabs.ie" target="_blank">MABS</a></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="cta-buttons">
+            <a href="/Chat" class="cta-button">Connect to Financial Advisor</a>
+        </div>
+    </div>
+
+    <!-- Legal Support Section -->
+    <div class="service-section" id="legal-support" style="display: none;">
+        <div class="service-header">
+            <div class="service-icon">
+                <i class="bi bi-briefcase"></i>
+            </div>
+            <div class="service-title">
+                <h2>Legal Support</h2>
+                <p>Resources and guidance for legal matters</p>
+            </div>
+        </div>
+        <div class="service-description">
+            <p>Access legal advice, document assistance, and resources to help you navigate custody, child support, and other legal matters as a single parent.</p>
+        </div>
+        <div class="service-features">
+            <div class="row">
+                <div class="col-md-6 mb-4">
+                    <div class="feature-item">
+                        <div class="feature-icon"><i class="bi bi-file-earmark-text"></i></div>
+                        <div class="feature-content">
+                            <h3>Legal Consultation</h3>
+                            <p>Get advice on custody arrangements, child support, and other legal matters.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 mb-4">
+                    <div class="feature-item">
+                        <div class="feature-icon"><i class="bi bi-journal-text"></i></div>
+                        <div class="feature-content">
+                            <h3>Document Assistance</h3>
+                            <p>Understanding legal documents is crucial for single parents in Ireland. For custody matters, key documents include Guardianship Orders (establishing parental rights), Access Orders (determining visitation schedules), and Maintenance Orders (outlining child support payments). The Family Law Courts issue these documents, and you can find templates and guidance on the Courts Service website. If you cannot afford legal representation, the Legal Aid Board provides services on a sliding fee scale based on your income. Free Legal Advice Centres (FLAC) offer initial consultations at clinics nationwide. For maintenance issues, you can apply directly to the District Court without a solicitor using forms available on the Courts Service website. Always keep copies of all legal documents in a safe place and bring them to any legal consultations.</p>
+                            <p class="resource-source">Sources: <a href="https://www.courts.ie" target="_blank">Courts Service</a>, <a href="https://www.legalaidboard.ie" target="_blank">Legal Aid Board</a>, <a href="https://www.flac.ie" target="_blank">FLAC</a></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="cta-buttons">
+            <a href="/Chat" class="cta-button">Connect to Legal Advisor</a>
+        </div>
+    </div>
+
+    <!-- Volunteer Services Section -->
+    <div class="service-section" id="volunteer-services" style="display: none;">
+        <div class="service-header">
+            <div class="service-icon">
+                <i class="bi bi-hands-helping"></i>
+            </div>
+            <div class="service-title">
+                <h2>Volunteer Services</h2>
+                <p>Give back to the community</p>
+            </div>
+        </div>
+        <div class="service-description">
+            <p>Join our community of volunteers and make a meaningful difference in the lives of single parents across Ireland. Whether you have a few hours a week or can help with specific skills, your contribution matters.</p>
+        </div>
+        <div class="service-features">
+            <div class="row">
+                <div class="col-md-6 mb-4">
+                    <div class="feature-item">
+                        <div class="feature-icon"><i class="bi bi-calendar-check"></i></div>
+                        <div class="feature-content">
+                            <h3>Current Volunteering Opportunities & Impact</h3>
+                            <p>We currently need volunteers for childcare assistance (evenings and weekends), transportation help for appointments, IT support for parents working from home, and mentors with experience in single parenting. Our volunteers report that just 2-4 hours weekly makes a significant difference, with 87% of supported families reporting improved wellbeing. Urgent needs include weekend childminders in Dublin and Cork, and remote homework helpers nationwide.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 mb-4">
+                    <div class="feature-item">
+                        <div class="feature-icon"><i class="bi bi-people"></i></div>
+                        <div class="feature-content">
+                            <h3>Become a Volunteer</h3>
+                            <p>Ready to lend a hand? Click the button below to send us an email expressing your interest in becoming a volunteer. Tell us a little about yourself and how you'd like to contribute. We'll get back to you soon!</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="cta-buttons">
+            <a href="https://www.volunteer.ie/find-a-volunteer-role/" class="cta-button" target="_blank" rel="noopener" aria-label="Learn more about volunteer roles on Volunteer Ireland website">Learn More About Roles</a>
+            <a href="mailto:volunteer@singleparentsupport.com?subject=Volunteer%20Interest&body=Hi%20Team%2C%0A%0AI'm%20interested%20in%20volunteering%20with%20Single%20Parent%20Support!%20Here's%20a%20little%20about%20me...%0A%0A" class="cta-button secondary" aria-label="Send email to express interest in volunteering">Email Us: I Want to Volunteer!</a>
+        </div>
+
+        <!-- Added testimonial for social proof -->
+        <div class="testimonial mt-4">
+            <p class="testimonial-text">"Volunteering with Single Parent Support has been incredibly rewarding. I help with weekend childcare once a month, and seeing the difference it makes to parents who can have a few hours to themselves is amazing."</p>
+            <p class="testimonial-author">- Michael D., Volunteer since 2023</p>
+        </div>
+
+        <!-- Added FAQ section for common questions -->
+        <div class="faq-section mt-4">
+            <h3>Frequently Asked Questions</h3>
+            <div class="faq-item">
+                <div class="faq-question">How much time do I need to commit?</div>
+                <div class="faq-answer">We welcome volunteers who can commit as little as 2 hours per month. Many of our volunteers help for 2-4 hours weekly, but we can work with your schedule.</div>
+            </div>
+            <div class="faq-item">
+                <div class="faq-question">Do I need special qualifications?</div>
+                <div class="faq-answer">Most roles don't require special qualifications, though some (like counseling) do. We provide training for all volunteers. Your life experience and willingness to help are most important.</div>
+            </div>
+            <div class="faq-item">
+                <div class="faq-question">Can I volunteer remotely?</div>
+                <div class="faq-answer">Yes! We have several remote volunteer opportunities including virtual tutoring, IT support, and administrative assistance.</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Resource Library Section -->
+    <div class="service-section" id="resource-library" style="display: none;">
+        <div class="service-header">
+            <div class="service-icon">
+                <i class="bi bi-journal-bookmark"></i>
+            </div>
+            <div class="service-title">
+                <h2>Resource Library</h2>
+                <p>Access guides, articles, and tools for single parents</p>
+            </div>
+        </div>
+        <div class="service-description">
+            <p>Browse our curated library of resources covering parenting, legal rights, financial planning, and more.</p>
+        </div>
+
+        <!-- Resource Library Implementation -->
+        <div class="resource-library-container" id="resource-library-container">
+            <!-- Category Filter Section -->
+            <div class="resource-categories">
+                <h3>Browse by Category</h3>
+                <div class="category-buttons">
+                    <button class="category-btn active" data-category="all">All Categories</button>
+                    <button class="category-btn" data-category="parenting">Parenting</button>
+                    <button class="category-btn" data-category="financial">Financial Planning</button>
+                    <button class="category-btn" data-category="legal">Legal Rights</button>
+                    <button class="category-btn" data-category="emotional">Emotional Support</button>
+                </div>
+            </div>
+
+            <!-- Featured Resources Section (initially visible) -->
+            <div class="featured-resources">
+                <h3>Featured Resources</h3>
+                <div class="resource-cards-container" id="featured-resources-container">
+                    <!-- Featured resource cards will be populated by JavaScript -->
+                </div>
+                <div class="browse-all-container">
+                    <button id="browse-all-btn" class="cta-button">Browse All Resources</button>
+                </div>
+            </div>
+
+            <!-- All Resources Section (initially hidden) -->
+            <div class="all-resources" id="all-resources-section" style="display: none;">
+                <h3>All Resources</h3>
+                <div class="resource-cards-container" id="all-resources-container">
+                    <!-- All resource cards will be populated by JavaScript -->
+                </div>
+                <div class="back-to-featured-container">
+                    <button id="back-to-featured-btn" class="secondary-button">Back to Featured</button>
+                </div>
+            </div>
         </div>
     </div>
 </div>
 
 @section Scripts {
     <script>
-        // Add Bootstrap Icons if not already included in layout
-        if (!document.querySelector('link[href*="bootstrap-icons"]')) {
-            const iconLink = document.createElement('link');
-            iconLink.rel = 'stylesheet';
-            iconLink.href = 'https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css';
-            document.head.appendChild(iconLink);
-        }
-
-        // Tab functionality
-        document.addEventListener('DOMContentLoaded', function() {
-            const tabs = document.querySelectorAll('.service-tab');
-            const sections = document.querySelectorAll('.service-section');
-
-            tabs.forEach(tab => {
-                tab.addEventListener('click', function() {
-                    // Remove active class from all tabs
-                    tabs.forEach(t => t.classList.remove('active'));
-
-                    // Add active class to clicked tab
-                    this.classList.add('active');
-
-                    // Hide all sections
-                    sections.forEach(section => {
-                        section.style.display = 'none';
-                    });
-
-                    // Show the corresponding section
-                    const targetId = this.getAttribute('data-target');
-                    document.getElementById(targetId).style.display = 'block';
-                });
+        $(document).ready(function () {
+            // Tab switching functionality
+            $('.service-tab').click(function () {
+                var target = $(this).data('target');
+                $('.service-tab').removeClass('active');
+                $(this).addClass('active');
+                $('.service-section').hide();
+                $('#' + target).show();
             });
 
-            // FAQ functionality
-            const faqQuestions = document.querySelectorAll('.faq-question');
+            // FAQ toggle functionality
+            $('.faq-question').click(function () {
+                $(this).next('.faq-answer').slideToggle();
+                $(this).toggleClass('active');
+            });
 
-            faqQuestions.forEach(question => {
-                question.addEventListener('click', function() {
-                    // Toggle active class
-                    this.classList.toggle('active');
+            // Resource Library functionality
 
-                    // Toggle answer visibility
-                    const answer = this.nextElementSibling;
-                    answer.classList.toggle('show');
+            // Resource data array - hardcoded resources
+            const resources = [
+                {
+                    id: 1,
+                    title: "Financial Planning Guide",
+                    description: "Learn how to create a budget, save for emergencies, and plan for your child's future.",
+                    category: "financial",
+                    imageUrl: "https://images.unsplash.com/photo-1554224155-6726b3ff858f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1011&q=80",
+                    featured: true
+                },
+                {
+                    id: 2,
+                    title: "Co-Parenting Strategies",
+                    description: "Tips for effective communication and cooperation with your co-parent.",
+                    category: "parenting",
+                    imageUrl: "https://images.unsplash.com/photo-1536640712-4d4c36ff0e4e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1035&q=80",
+                    featured: true
+                },
+                {
+                    id: 3,
+                    title: "Self-Care for Single Parents",
+                    description: "Practical ways to prioritize your wellbeing while juggling parenting responsibilities.",
+                    category: "emotional",
+                    imageUrl: "https://images.unsplash.com/photo-1506126613408-eca07ce68773?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=999&q=80",
+                    featured: true
+                },
+                {
+                    id: 4,
+                    title: "Understanding Child Support",
+                    description: "A guide to child support regulations and how to navigate the system.",
+                    category: "legal",
+                    imageUrl: "https://images.unsplash.com/photo-1589578527966-fdac0f44566c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=987&q=80",
+                    featured: false
+                },
+                {
+                    id: 5,
+                    title: "Guide to Effective Communication",
+                    description: "Techniques for clear communication in challenging situations.",
+                    category: "emotional",
+                    imageUrl: "https://images.unsplash.com/photo-1573497161161-c3e73707e25c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=987&q=80",
+                    featured: false
+                },
+                {
+                    id: 6,
+                    title: "Building Your Support Network",
+                    description: "How to create and maintain a support system as a single parent.",
+                    category: "emotional",
+                    imageUrl: "https://images.unsplash.com/photo-1529156069898-49953e39b3ac?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2232&q=80",
+                    featured: false
+                },
+                {
+                    id: 7,
+                    title: "Housing Assistance Guide",
+                    description: "Information on housing support programs available for single parents.",
+                    category: "financial",
+                    imageUrl: "https://images.unsplash.com/photo-1560518883-ce09059eeffa?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1073&q=80",
+                    featured: false
+                },
+                {
+                    id: 8,
+                    title: "Childcare Options",
+                    description: "A comparison of childcare options and assistance programs.",
+                    category: "parenting",
+                    imageUrl: "https://images.unsplash.com/photo-1602046819300-66a58a4d7c2b?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=987&q=80",
+                    featured: false
+                },
+                {
+                    id: 9,
+                    title: "Legal Rights of Single Parents",
+                    description: "Understanding your legal rights and responsibilities as a single parent.",
+                    category: "legal",
+                    imageUrl: "https://images.unsplash.com/photo-1589578527966-fdac0f44566c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=987&q=80",
+                    featured: false
+                },
+                {
+                    id: 10,
+                    title: "Managing Stress and Anxiety",
+                    description: "Techniques for managing stress and anxiety as a single parent.",
+                    category: "emotional",
+                    imageUrl: "https://images.unsplash.com/photo-1506126613408-eca07ce68773?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=999&q=80",
+                    featured: false
+                }
+            ];
+
+            // Function to generate HTML for a resource card
+            function createResourceCard(resource) {
+                return `
+                    <div class="resource-card" data-category="${resource.category}">
+                        <div class="resource-image">
+                            <img src="${resource.imageUrl || 'https://images.unsplash.com/photo-1532012197267-da84d127e765?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=987&q=80'}" alt="${resource.title}">
+                        </div>
+                        <div class="resource-content">
+                            <h4>${resource.title}</h4>
+                            <span class="category-tag">${getCategoryName(resource.category)}</span>
+                            <p class="resource-description">${resource.description}</p>
+                            <a href="#" onclick="alert('This would link to the full resource in a real implementation.'); return false;" class="btn btn-outline-primary">Read More</a>
+                        </div>
+                    </div>
+                `;
+            }
+
+            // Function to get display name for category
+            function getCategoryName(categoryCode) {
+                const categories = {
+                    'parenting': 'Parenting',
+                    'financial': 'Financial Planning',
+                    'legal': 'Legal Rights',
+                    'emotional': 'Emotional Support'
+                };
+                return categories[categoryCode] || categoryCode;
+            }
+
+            // Function to initialize the resource library
+            function initResourceLibrary() {
+                // Populate featured resources
+                const featuredResources = resources.filter(r => r.featured);
+                const featuredContainer = document.getElementById('featured-resources-container');
+                featuredContainer.innerHTML = featuredResources.map(createResourceCard).join('');
+
+                // Populate all resources
+                const allContainer = document.getElementById('all-resources-container');
+                allContainer.innerHTML = resources.map(createResourceCard).join('');
+
+                // Set up event listeners
+                document.getElementById('browse-all-btn').addEventListener('click', showAllResources);
+                document.getElementById('back-to-featured-btn').addEventListener('click', showFeaturedResources);
+
+                // Set up category filter buttons
+                document.querySelectorAll('.category-btn').forEach(button => {
+                    button.addEventListener('click', filterByCategory);
                 });
+            }
+
+            // Function to show all resources
+            function showAllResources() {
+                document.querySelector('.featured-resources').style.display = 'none';
+                document.getElementById('all-resources-section').style.display = 'block';
+                // Reset category filter to "All"
+                document.querySelectorAll('.category-btn').forEach(btn => {
+                    btn.classList.remove('active');
+                });
+                document.querySelector('.category-btn[data-category="all"]').classList.add('active');
+                filterByCategory({ target: document.querySelector('.category-btn[data-category="all"]') });
+            }
+
+            // Function to show featured resources
+            function showFeaturedResources() {
+                document.getElementById('all-resources-section').style.display = 'none';
+                document.querySelector('.featured-resources').style.display = 'block';
+            }
+
+            // Function to filter resources by category
+            function filterByCategory(event) {
+                const category = event.target.getAttribute('data-category');
+
+                // Update active button
+                document.querySelectorAll('.category-btn').forEach(btn => {
+                    btn.classList.remove('active');
+                });
+                event.target.classList.add('active');
+
+                // Filter resources
+                const container = document.getElementById('all-resources-section').style.display === 'none'
+                    ? document.getElementById('featured-resources-container')
+                    : document.getElementById('all-resources-container');
+
+                const cards = container.querySelectorAll('.resource-card');
+                cards.forEach(card => {
+                    if (category === 'all' || card.getAttribute('data-category') === category) {
+                        card.style.display = 'block';
+                    } else {
+                        card.style.display = 'none';
+                    }
+                });
+            }
+
+            // Initialize resource library when the resource library tab is clicked
+            $('.service-tab[data-target="resource-library"]').on('click', function() {
+                // Small timeout to ensure the DOM is ready
+                setTimeout(function() {
+                    initResourceLibrary();
+                }, 100);
             });
         });
     </script>
