@@ -39,7 +39,7 @@
                                     <div class="chat-avatar">
                                         @{
                                             string photoUrl = null;
-                                            string username = user.UserName?.ToLower().Replace(" ", "");
+                                            string username = user.UserName?.ToLower().Replace(" ", "").Split('@')[0];
 
                                             // Check if this user has a specific photo
                                             if (ViewBag.VolunteerPhotos != null && username != null &&
