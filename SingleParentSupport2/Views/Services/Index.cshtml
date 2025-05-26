@@ -548,6 +548,14 @@
     <script>
         $(document).ready(function () {
             // Tab switching functionality
+            $('.service-tab').click(function () {
+                var target = $(this).data('target');
+                $('.service-tab').removeClass('active');
+                $(this).addClass('active');
+                $('.service-section').hide();
+                $('#' + target).show();
+            });
+
             const tabToShow = "@ViewBag.SelectedTab";
             document.querySelectorAll(".service-tab").forEach(tab => {
                 tab.classList.remove("active");
@@ -558,14 +566,12 @@
             if (targetTab) {
                 targetTab.classList.add("active");
             }
-
-            $('.service-tab').click(function () {
-                var target = $(this).data('target');
-                $('.service-tab').removeClass('active');
-                $(this).addClass('active');
-                $('.service-section').hide();
-                $('#' + target).show();
-            });
+            else{
+                const firstTab = document.querySelector(".service-tab");
+                if (firstTab) {
+                    firstTab.classList.add("active");
+                }
+            }
 
             // FAQ toggle functionality
             $('.faq-question').click(function () {
