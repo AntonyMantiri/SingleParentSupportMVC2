@@ -54,10 +54,10 @@ namespace SingleParentSupport2.Controllers
 
                 TempData["AppointmentDate"] = model.AppointmentDate.ToString("dd-MM-yyyy");
                 TempData["AppointmentTime"] = model.AppointmentTime.ToString();
-                TempData["VolunteerName"] = await _userManager.Users
+                TempData["VolunteerName"] = _userManager.Users
                                                             .Where(u => u.Id == model.VolunteerId)
                                                             .Select(u => u.FirstName + " " + u.LastName)
-                                                            .FirstOrDefaultAsync();
+                                                            .FirstOrDefault();
 
                 _context.Appointments.Add(appointment);
                 await _context.SaveChangesAsync();
@@ -171,7 +171,7 @@ namespace SingleParentSupport2.Controllers
 
         private List<AvailableTime> GetAvailableTimes(string volunteerId, DateTime date)
         {
-            List<AvailableTime> availableTimes = new List<AvailableTime>();
+            List<AvailableTime> availableTimes = [];
 
             var startOfDay = date.Date.AddHours(9); // 9 AM
             var endOfDay = date.Date.AddHours(21); // 9 PM

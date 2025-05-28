@@ -27,7 +27,7 @@ namespace SingleParentSupport2.Controllers
         [HttpGet]
         public async Task<IActionResult> GetUsers()
         {
-            var users = await _userManager.Users.ToListAsync();
+            var users = _userManager.Users.ToList();
             var userViewModels = new List<UserManagementViewModel>();
 
             foreach (var user in users)
@@ -147,9 +147,9 @@ namespace SingleParentSupport2.Controllers
 
         // GET: api/UserApi/Roles
         [HttpGet("Roles")]
-        public async Task<IActionResult> GetRoles()
+        public IActionResult GetRoles()
         {
-            var roles = await _roleManager.Roles.ToListAsync();
+            var roles = _roleManager.Roles.ToList();
             return Ok(roles.Select(r => r.Name));
         }
     }

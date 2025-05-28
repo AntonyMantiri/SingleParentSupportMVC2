@@ -3,8 +3,11 @@ using Microsoft.AspNetCore.Authentication.Google;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using SingleParentSupport2.Models;
+using SingleParentSupport2.Hubs;
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddSignalR();
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
@@ -118,6 +121,8 @@ if (!app.Environment.IsDevelopment())
     app.UseExceptionHandler("/Home/Error");
     app.UseHsts();
 }
+
+app.MapHub<ChatHub>("/chatHub");
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();

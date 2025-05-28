@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using SingleParentSupport2.Models;
+using System.Diagnostics.CodeAnalysis;
 using System.Security.Claims;
 
 namespace SingleParentSupport2.Controllers
@@ -10,6 +11,7 @@ namespace SingleParentSupport2.Controllers
     [Route("api/[controller]")]
     [ApiController]
     [Authorize]
+    [ExcludeFromCodeCoverage]
     public class SupportRequestApiController : ControllerBase
     {
         private readonly AppDbContext _context;

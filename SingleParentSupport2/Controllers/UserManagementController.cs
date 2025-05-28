@@ -1,12 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using SingleParentSupport2.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace SingleParentSupport2.Controllers
 {
@@ -27,7 +22,7 @@ namespace SingleParentSupport2.Controllers
         // GET: /UserManagement
         public async Task<IActionResult> Index()
         {
-            var users = await _userManager.Users.ToListAsync();
+            var users = _userManager.Users.ToList();
             var userViewModels = new List<UserManagementViewModel>();
 
             foreach (var user in users)
@@ -94,7 +89,7 @@ namespace SingleParentSupport2.Controllers
             }
 
             var roles = await _userManager.GetRolesAsync(user);
-            var allRoles = await _roleManager.Roles.ToListAsync();
+            var allRoles = _roleManager.Roles.ToList();
 
             var viewModel = new UserEditViewModel
             {
@@ -166,7 +161,7 @@ namespace SingleParentSupport2.Controllers
             }
 
             // If we got this far, something failed, redisplay form
-            var allRoles = await _roleManager.Roles.ToListAsync();
+            var allRoles = _roleManager.Roles.ToList();
             model.AllRoles = allRoles.Select(r => r.Name).ToList();
             return View(model);
         }

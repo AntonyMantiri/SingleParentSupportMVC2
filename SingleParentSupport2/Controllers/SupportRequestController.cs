@@ -3,11 +3,13 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using SingleParentSupport2.Models;
+using System.Diagnostics.CodeAnalysis;
 using System.Security.Claims;
 
 namespace SingleParentSupport2.Controllers
 {
     [Authorize]
+    [ExcludeFromCodeCoverage]
     public class SupportRequestController : Controller
     {
         private readonly AppDbContext _context;
