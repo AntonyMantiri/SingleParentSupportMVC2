@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace SingleParentSupport2.Models
+﻿namespace SingleParentSupport2.Models
 {
     public class SupportRequest
     {
